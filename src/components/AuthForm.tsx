@@ -22,7 +22,9 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
     });
     const data = await res.json();
     setLoading(false);
-    if (res.ok && mode === "sign-in") router.push("/");
+    if (res.ok && mode === "sign-in") {
+      router.push(data.user?.role === "ADMIN" ? "/inomjon0751" : "/");
+    }
     setMessage(data.message ?? content.success);
   }
 
