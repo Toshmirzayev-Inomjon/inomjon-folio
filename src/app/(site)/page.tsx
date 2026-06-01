@@ -1,26 +1,32 @@
 import { TabbedPortfolio } from "@/components/TabbedPortfolio";
-import { siteIdentity } from "@/data/siteData";
-import { getLocationView, getProfileView, getProjectViews } from "@/lib/data";
+import { locationSeed, personalProfile, projectSeeds } from "@/data/siteData";
+import type { LocationView, ProfileView, ProjectView } from "@/lib/data";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
-export default async function HomePage() {
-  const [profile, projects, location] = await Promise.all([
-    getProfileView(),
-    getProjectViews(),
-    getLocationView()
-  ]);
+const profile: ProfileView = {
+  name: personalProfile.name,
+  headline: personalProfile.headline,
+  bio: personalProfile.bio,
+  heroImage: personalProfile.heroImage,
+  cvUrl: personalProfile.cvUrl,
+  telegramUrl: personalProfile.telegramUrl,
+  githubUrl: personalProfile.githubUrl,
+  linkedinUrl: personalProfile.linkedinUrl,
+  instagramUrl: personalProfile.instagramUrl
+};
 
-  if (!profile || !location) {
-    return (
-      <main className="grid h-screen place-items-center bg-slate-50 px-4">
-        <div className="max-w-xl rounded-[28px] bg-white p-8 shadow-lg">
-          <h1 className="text-3xl font-black text-slate-950">{siteIdentity.setupTitle}</h1>
-          <p className="mt-4 leading-7 text-slate-600">{siteIdentity.setupDescription}</p>
-        </div>
-      </main>
-    );
-  }
+const projects: ProjectView[] = projectSeeds.map((project, index) => ({
+  id: `static-project-${index + 1}`,
+  ...project
+}));
 
+const location: LocationView = {
+  latitude: locationSeed.latitude,
+  longitude: locationSeed.longitude,
+  iframeUrl: locationSeed.iframeUrl
+};
+
+export default function HomePage() {
   return <TabbedPortfolio profile={profile} projects={projects} location={location} />;
 }
