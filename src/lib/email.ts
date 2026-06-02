@@ -21,8 +21,8 @@ function buildVerificationEmailHtml(verifyUrl: string) {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${escapeHtml(emailContent.subject)}</title>
   </head>
-  <body style="margin:0;background:#021b1b;font-family:Inter,Arial,sans-serif;color:#f8f1df;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#021b1b 0%,#063936 52%,#0b5c49 100%);padding:32px 16px;">
+  <body style="margin:0;background:#050812;font-family:Inter,Arial,sans-serif;color:#f8f1df;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#050812 0%,#0b1020 52%,#111827 100%);padding:32px 16px;">
       <tr>
         <td align="center">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;border:1px solid rgba(248,241,223,.16);border-radius:24px;background:rgba(6,47,45,.92);box-shadow:0 28px 80px rgba(0,0,0,.32);overflow:hidden;">
@@ -31,7 +31,7 @@ function buildVerificationEmailHtml(verifyUrl: string) {
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                   <tr>
                     <td>
-                      <div style="display:inline-block;border-radius:14px;background:linear-gradient(135deg,#d6a84e,#0f9b6f);padding:10px 13px;color:#fff9ea;font-weight:900;letter-spacing:.5px;">IF</div>
+                      <div style="display:inline-block;border-radius:14px;background:linear-gradient(135deg,#2563eb,#4f46e5);padding:10px 13px;color:#ffffff;font-weight:900;letter-spacing:.5px;">IF</div>
                     </td>
                     <td align="right" style="color:#c8d3bf;font-size:13px;font-weight:700;">Secure verification</td>
                   </tr>
@@ -47,7 +47,7 @@ function buildVerificationEmailHtml(verifyUrl: string) {
             </tr>
             <tr>
               <td style="padding:24px 30px 30px;">
-                <a href="${escapedUrl}" style="display:inline-block;border-radius:14px;background:linear-gradient(135deg,#d6a84e 0%,#0f9b6f 52%,#074843 100%);color:#fff9ea;text-decoration:none;font-size:15px;font-weight:900;padding:15px 22px;box-shadow:0 18px 44px rgba(13,122,86,.28);">${escapeHtml(emailContent.verifyLinkLabel)}</a>
+                <a href="${escapedUrl}" style="display:inline-block;border-radius:14px;background:linear-gradient(135deg,#2563eb 0%,#4f46e5 52%,#7c3aed 100%);color:#ffffff;text-decoration:none;font-size:15px;font-weight:900;padding:15px 22px;box-shadow:0 18px 44px rgba(79,70,229,.28);">${escapeHtml(emailContent.verifyLinkLabel)}</a>
               </td>
             </tr>
             <tr>
@@ -82,8 +82,8 @@ function buildContactNotificationEmailHtml(input: { name: string; email: string;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Yangi portfolio xabari</title>
   </head>
-  <body style="margin:0;background:#021b1b;font-family:Inter,Arial,sans-serif;color:#f8f1df;">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#021b1b 0%,#063936 52%,#0b5c49 100%);padding:32px 16px;">
+  <body style="margin:0;background:#050812;font-family:Inter,Arial,sans-serif;color:#f8f1df;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#050812 0%,#0b1020 52%,#111827 100%);padding:32px 16px;">
       <tr>
         <td align="center">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;border:1px solid rgba(248,241,223,.16);border-radius:24px;background:rgba(6,47,45,.94);box-shadow:0 28px 80px rgba(0,0,0,.32);overflow:hidden;">

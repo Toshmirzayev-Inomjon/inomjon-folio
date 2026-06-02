@@ -148,12 +148,12 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
                 <LayoutDashboard size={22} />
               </div>
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-600">{adminContent.labels.dashboardEyebrow}</p>
-                <h1 className="text-xl font-black text-slate-950">{adminContent.labels.dashboardTitle}</h1>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-indigo-300">{adminContent.labels.dashboardEyebrow}</p>
+                <h1 className="text-xl font-black text-white">{adminContent.labels.dashboardTitle}</h1>
               </div>
             </div>
 
-            <nav className="mt-8 grid gap-2 text-sm font-black text-slate-600">
+            <nav className="mt-8 grid gap-2 text-sm font-black text-slate-300">
               {adminContent.nav.map(({ label, href, icon }) => {
                 const Icon = adminIconMap[icon];
 
@@ -166,7 +166,7 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
             </nav>
 
             <div className="mt-auto rounded-3xl bg-slate-950 p-5 text-white">
-              <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">{adminContent.labels.status}</p>
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-indigo-200">{adminContent.labels.status}</p>
               <p className="mt-3 text-sm leading-7 text-slate-200">{adminContent.labels.statusText}</p>
             </div>
           </div>
@@ -176,20 +176,20 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
           <header className="premium-card rounded-[30px] p-6 sm:p-8">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
-                <p className="text-sm font-black uppercase tracking-[0.18em] text-blue-600">{siteIdentity.brandName}</p>
-                <h2 className="mt-2 text-3xl font-black leading-tight text-slate-950 sm:text-4xl">{adminContent.labels.contentTitle}</h2>
-                <p className="mt-3 max-w-2xl leading-7 text-slate-600">{adminContent.labels.contentDescription}</p>
+                <p className="text-sm font-black uppercase tracking-[0.18em] text-indigo-300">{siteIdentity.brandName}</p>
+                <h2 className="mt-2 text-3xl font-black leading-tight text-white sm:text-4xl">{adminContent.labels.contentTitle}</h2>
+                <p className="mt-3 max-w-2xl leading-7 text-slate-300">{adminContent.labels.contentDescription}</p>
               </div>
-              {notice && <p className="rounded-full bg-emerald-50 px-4 py-2 text-sm font-black text-emerald-700 ring-1 ring-emerald-100">{notice}</p>}
+              {notice && <p className="rounded-full bg-indigo-500/12 px-4 py-2 text-sm font-black text-indigo-200 ring-1 ring-indigo-300/20">{notice}</p>}
             </div>
             <div className="mt-7 grid gap-4 sm:grid-cols-3">
               {stats.map((stat) => {
                 const Icon = stat.icon;
                 return (
-                  <div key={stat.label} className="rounded-3xl bg-white/76 p-5 ring-1 ring-slate-200">
-                    <Icon className="text-blue-700" size={22} />
-                    <p className="mt-4 text-3xl font-black text-slate-950">{stat.value}</p>
-                    <p className="mt-1 text-sm font-bold text-slate-500">{stat.label}</p>
+                  <div key={stat.label} className="rounded-3xl bg-white/5 p-5 ring-1 ring-white/10">
+                    <Icon className="text-indigo-300" size={22} />
+                    <p className="mt-4 text-3xl font-black text-white">{stat.value}</p>
+                    <p className="mt-1 text-sm font-bold text-slate-400">{stat.label}</p>
                   </div>
                 );
               })}
@@ -198,8 +198,8 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
 
           <section id="profile" className="premium-card rounded-[30px] p-6 sm:p-8">
             <div className="mb-6 flex items-center gap-2">
-              <Settings className="text-blue-700" size={22} />
-              <h2 className="text-2xl font-black text-slate-950">{adminContent.labels.profileEdit}</h2>
+              <Settings className="text-indigo-300" size={22} />
+              <h2 className="text-2xl font-black text-white">{adminContent.labels.profileEdit}</h2>
             </div>
             <form
               className="grid gap-4 xl:grid-cols-[260px_minmax(0,1fr)]"
@@ -208,7 +208,7 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
                 submitJson("/api/admin/profile", event.currentTarget);
               }}
             >
-              <div className="rounded-3xl bg-white/72 p-4 ring-1 ring-slate-200">
+              <div className="rounded-3xl bg-white/5 p-4 ring-1 ring-white/10">
                 <Image src={profileImage} width={400} height={500} alt={profile.name} className="aspect-[4/5] w-full rounded-2xl object-cover" unoptimized />
                 <label className="mt-4 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-sm font-black text-white">
                   <ImageUp size={17} />
@@ -249,8 +249,8 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
 
           <section id="location" className="premium-card rounded-[30px] p-6 sm:p-8">
             <div className="mb-6 flex items-center gap-2">
-              <MapPinned className="text-blue-700" size={22} />
-              <h2 className="text-2xl font-black text-slate-950">{adminContent.labels.mapsControl}</h2>
+              <MapPinned className="text-indigo-300" size={22} />
+              <h2 className="text-2xl font-black text-white">{adminContent.labels.mapsControl}</h2>
             </div>
             <form
               className="grid gap-4 lg:grid-cols-3"
@@ -268,22 +268,22 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
 
           <section id="projects" className="premium-card rounded-[30px] p-6 sm:p-8">
             <div className="mb-6 flex items-center gap-2">
-              <FolderKanban className="text-blue-700" size={22} />
-              <h2 className="text-2xl font-black text-slate-950">{adminContent.labels.projectCrud}</h2>
+              <FolderKanban className="text-indigo-300" size={22} />
+              <h2 className="text-2xl font-black text-white">{adminContent.labels.projectCrud}</h2>
             </div>
 
             <form
-              className="grid gap-4 rounded-3xl bg-white/68 p-4 ring-1 ring-slate-200 lg:grid-cols-[220px_minmax(0,1fr)]"
+              className="grid gap-4 rounded-3xl bg-white/5 p-4 ring-1 ring-white/10 lg:grid-cols-[220px_minmax(0,1fr)]"
               onSubmit={(event) => {
                 event.preventDefault();
                 createProject(event.currentTarget);
               }}
             >
-              <div className="rounded-3xl bg-white/72 p-3 ring-1 ring-slate-200">
+              <div className="rounded-3xl bg-white/5 p-3 ring-1 ring-white/10">
                 {createProjectImage ? (
                   <Image src={createProjectImage} width={420} height={260} alt={adminContent.labels.newProjectPreview} className="aspect-[16/10] w-full rounded-2xl object-cover" unoptimized />
                 ) : (
-                  <div className="grid aspect-[16/10] place-items-center rounded-2xl bg-slate-100 text-slate-400">
+                  <div className="grid aspect-[16/10] place-items-center rounded-2xl bg-slate-800 text-slate-400">
                     <ImageUp size={30} />
                   </div>
                 )}
@@ -301,7 +301,7 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
                 <label className="label">{adminContent.form.techTags}<input className="field" name="techStack" placeholder={adminContent.placeholders.techTags} /></label>
                 <label className="label">{adminContent.form.visitUrl}<input className="field" name="visitUrl" placeholder={adminContent.placeholders.imageUrl} /></label>
                 <label className="label">{adminContent.form.githubUrl}<input className="field" name="githubUrl" placeholder={adminContent.placeholders.githubUrl} /></label>
-                <label className="flex items-center gap-2 text-sm font-black text-slate-600"><input name="featured" type="checkbox" /> {adminContent.labels.featured}</label>
+                <label className="flex items-center gap-2 text-sm font-black text-slate-300"><input name="featured" type="checkbox" /> {adminContent.labels.featured}</label>
                 <button className="btn-primary lg:col-span-2"><Plus size={17} /> {adminContent.actions.createProject}</button>
               </div>
             </form>
@@ -310,13 +310,13 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
               {projects.map((project) => (
                 <form
                   key={project.id}
-                  className="grid gap-4 rounded-3xl bg-white/72 p-4 ring-1 ring-slate-200 xl:grid-cols-[220px_minmax(0,1fr)]"
+                  className="grid gap-4 rounded-3xl bg-white/5 p-4 ring-1 ring-white/10 xl:grid-cols-[220px_minmax(0,1fr)]"
                   onSubmit={(event) => {
                     event.preventDefault();
                     saveProject(project.id, event.currentTarget);
                   }}
                 >
-                  <div className="rounded-3xl bg-white/72 p-3 ring-1 ring-slate-200">
+                  <div className="rounded-3xl bg-white/5 p-3 ring-1 ring-white/10">
                     <Image src={projectImages[project.id] ?? project.imageUrl} width={420} height={260} alt={project.title} className="aspect-[16/10] w-full rounded-2xl object-cover" unoptimized />
                     <label className="mt-3 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-sm font-black text-white">
                       <ImageUp size={17} />
@@ -343,7 +343,7 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
                     <label className="label">{adminContent.form.techTags}<input className="field" name="techStack" defaultValue={project.techStack} /></label>
                     <label className="label">{adminContent.form.visitUrl}<input className="field" name="visitUrl" defaultValue={project.visitUrl ?? ""} /></label>
                     <label className="label">{adminContent.form.githubUrl}<input className="field" name="githubUrl" defaultValue={project.githubUrl ?? ""} /></label>
-                    <label className="flex items-center gap-2 text-sm font-black text-slate-600"><input name="featured" type="checkbox" defaultChecked={project.featured} /> {adminContent.labels.featured}</label>
+                    <label className="flex items-center gap-2 text-sm font-black text-slate-300"><input name="featured" type="checkbox" defaultChecked={project.featured} /> {adminContent.labels.featured}</label>
                     <div className="flex flex-wrap gap-2 sm:col-span-2">
                       <button className="btn-primary"><Save size={17} /> {adminContent.actions.save}</button>
                       <button type="button" onClick={() => deleteProject(project.id)} className="inline-flex items-center gap-2 rounded-full bg-rose-50 px-5 py-3 font-black text-rose-700 ring-1 ring-rose-100">
@@ -358,21 +358,21 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
 
           <section id="inbox" className="premium-card rounded-[30px] p-6 sm:p-8">
             <div className="mb-6 flex items-center gap-2">
-              <Inbox className="text-blue-700" size={22} />
-              <h2 className="text-2xl font-black text-slate-950">{adminContent.labels.inbox}</h2>
+              <Inbox className="text-indigo-300" size={22} />
+              <h2 className="text-2xl font-black text-white">{adminContent.labels.inbox}</h2>
             </div>
             <div className="grid gap-4">
-              {messages.length === 0 && <p className="rounded-3xl bg-white/72 p-5 font-bold text-slate-500 ring-1 ring-slate-200">{adminContent.labels.noMessages}</p>}
+              {messages.length === 0 && <p className="rounded-3xl bg-white/5 p-5 font-bold text-slate-400 ring-1 ring-white/10">{adminContent.labels.noMessages}</p>}
               {messages.map((message) => (
-                <article key={message.id} className="rounded-3xl bg-white/72 p-5 ring-1 ring-slate-200">
+                <article key={message.id} className="rounded-3xl bg-white/5 p-5 ring-1 ring-white/10">
                   <div className="flex flex-wrap justify-between gap-3">
                     <div>
-                      <h3 className="text-lg font-black text-slate-950">{message.subject}</h3>
-                      <p className="mt-1 text-sm font-bold text-slate-500">{message.name} · {message.email}</p>
+                      <h3 className="text-lg font-black text-white">{message.subject}</h3>
+                      <p className="mt-1 text-sm font-bold text-slate-400">{message.name} · {message.email}</p>
                     </div>
-                    <span className="text-sm font-bold text-slate-500">{new Date(message.createdAt).toLocaleString()}</span>
+                    <span className="text-sm font-bold text-slate-400">{new Date(message.createdAt).toLocaleString()}</span>
                   </div>
-                  <p className="mt-4 leading-7 text-slate-700">{message.body}</p>
+                  <p className="mt-4 leading-7 text-slate-300">{message.body}</p>
                   <button onClick={() => deleteMessage(message.id)} className="mt-4 inline-flex items-center gap-2 rounded-full bg-rose-50 px-4 py-2 text-sm font-black text-rose-700 ring-1 ring-rose-100">
                     <Trash2 size={16} /> {adminContent.actions.deleteMessage}
                   </button>
