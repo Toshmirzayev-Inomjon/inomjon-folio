@@ -9,6 +9,10 @@ export const metadata: Metadata = {
   applicationName: siteIdentity.brandName,
   authors: [{ name: siteIdentity.ownerName, url: siteIdentity.siteUrl }],
   creator: siteIdentity.ownerName,
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico"
+  },
   alternates: {
     canonical: "/"
   },
