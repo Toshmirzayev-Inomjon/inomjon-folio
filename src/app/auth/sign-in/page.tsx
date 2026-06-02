@@ -4,11 +4,12 @@ import { authPageContent } from "@/data/siteData";
 
 export default function SignInPage() {
   return (
-    <main className="grid min-h-screen place-items-center px-4 py-12">
+    <main className="relative grid min-h-screen place-items-center overflow-hidden px-4 py-12">
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_12%,rgba(79,70,229,0.28),transparent_26rem),radial-gradient(circle_at_82%_18%,rgba(124,58,237,0.20),transparent_24rem),linear-gradient(135deg,#050812_0%,#0b1020_52%,#111827_100%)]" />
       <div className="w-full">
         <AuthForm mode="sign-in" />
-        <p className="mt-5 text-center text-sm text-slate-600">
-          {authPageContent.signIn.switchText} <Link href={authPageContent.signIn.switchHref} className="font-bold text-blue-700">{authPageContent.signIn.switchLabel}</Link>
+        <p className="mt-5 text-center text-sm text-slate-400">
+          {authPageContent.signIn.switchText} <Link href={authPageContent.signIn.switchHref} className="font-black text-indigo-200 transition hover:text-white">{authPageContent.signIn.switchLabel}</Link>
         </p>
       </div>
     </main>

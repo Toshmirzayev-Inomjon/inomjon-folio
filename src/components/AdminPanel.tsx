@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type ChangeEvent } from "react";
 import type { LocationSetting, Message, Profile, Project } from "@prisma/client";
@@ -34,6 +33,20 @@ function previewableImageSrc(value: string) {
   } catch {
     return "";
   }
+}
+
+function ImagePreview({ src, alt, className }: { src: string; alt: string; className: string }) {
+  const preview = previewableImageSrc(src);
+
+  if (!preview) {
+    return (
+      <div className={`${className} grid place-items-center bg-slate-900 text-slate-500`}>
+        <ImageUp size={30} />
+      </div>
+    );
+  }
+
+  return <img src={preview} alt={alt} className={className} loading="lazy" decoding="async" />;
 }
 
 const adminIconMap: Record<(typeof adminContent.nav)[number]["icon"] | (typeof adminContent.stats)[number]["icon"], LucideIcon> = {
@@ -209,7 +222,7 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
               }}
             >
               <div className="rounded-3xl bg-white/5 p-4 ring-1 ring-white/10">
-                <Image src={profileImage} width={400} height={500} alt={profile.name} className="aspect-[4/5] w-full rounded-2xl object-cover" unoptimized />
+                <ImagePreview src={profileImage} alt={profile.name} className="aspect-[4/5] w-full rounded-2xl object-cover" />
                 <label className="mt-4 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-sm font-black text-white">
                   <ImageUp size={17} />
                   {adminContent.labels.uploadImage}
@@ -280,13 +293,7 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
               }}
             >
               <div className="rounded-3xl bg-white/5 p-3 ring-1 ring-white/10">
-                {createProjectImage ? (
-                  <Image src={createProjectImage} width={420} height={260} alt={adminContent.labels.newProjectPreview} className="aspect-[16/10] w-full rounded-2xl object-cover" unoptimized />
-                ) : (
-                  <div className="grid aspect-[16/10] place-items-center rounded-2xl bg-slate-800 text-slate-400">
-                    <ImageUp size={30} />
-                  </div>
-                )}
+                <ImagePreview src={createProjectImage} alt={adminContent.labels.newProjectPreview} className="aspect-[16/10] w-full rounded-2xl object-cover" />
                 <label className="mt-3 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-sm font-black text-white">
                   <ImageUp size={17} />
                   {adminContent.labels.uploadImage}
@@ -317,7 +324,7 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
                   }}
                 >
                   <div className="rounded-3xl bg-white/5 p-3 ring-1 ring-white/10">
-                    <Image src={projectImages[project.id] ?? project.imageUrl} width={420} height={260} alt={project.title} className="aspect-[16/10] w-full rounded-2xl object-cover" unoptimized />
+                    <ImagePreview src={projectImages[project.id] ?? project.imageUrl} alt={project.title} className="aspect-[16/10] w-full rounded-2xl object-cover" />
                     <label className="mt-3 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-sm font-black text-white">
                       <ImageUp size={17} />
                       {adminContent.labels.uploadImage}
@@ -346,7 +353,7 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
                     <label className="flex items-center gap-2 text-sm font-black text-slate-300"><input name="featured" type="checkbox" defaultChecked={project.featured} /> {adminContent.labels.featured}</label>
                     <div className="flex flex-wrap gap-2 sm:col-span-2">
                       <button className="btn-primary"><Save size={17} /> {adminContent.actions.save}</button>
-                      <button type="button" onClick={() => deleteProject(project.id)} className="inline-flex items-center gap-2 rounded-full bg-rose-50 px-5 py-3 font-black text-rose-700 ring-1 ring-rose-100">
+                      <button type="button" onClick={() => deleteProject(project.id)} className="inline-flex items-center gap-2 rounded-xl border border-rose-400/20 bg-rose-500/10 px-5 py-3 font-black text-rose-200 transition hover:bg-rose-500/20">
                         <Trash2 size={17} /> {adminContent.actions.delete}
                       </button>
                     </div>
@@ -373,7 +380,7 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
                     <span className="text-sm font-bold text-slate-400">{new Date(message.createdAt).toLocaleString()}</span>
                   </div>
                   <p className="mt-4 leading-7 text-slate-300">{message.body}</p>
-                  <button onClick={() => deleteMessage(message.id)} className="mt-4 inline-flex items-center gap-2 rounded-full bg-rose-50 px-4 py-2 text-sm font-black text-rose-700 ring-1 ring-rose-100">
+                  <button onClick={() => deleteMessage(message.id)} className="mt-4 inline-flex items-center gap-2 rounded-xl border border-rose-400/20 bg-rose-500/10 px-4 py-2 text-sm font-black text-rose-200 transition hover:bg-rose-500/20">
                     <Trash2 size={16} /> {adminContent.actions.deleteMessage}
                   </button>
                 </article>
