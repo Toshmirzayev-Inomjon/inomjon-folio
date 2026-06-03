@@ -1,1 +1,0 @@
-/usr/lib/postgresql/16/bin/postgres "-D" "/home/inomjon/inomjonfolio/.local-postgres/data" "-p" "5434" "-k" "/home/inomjon/inomjonfolio/.local-postgres" "-h" "127.0.0.1"

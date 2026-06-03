@@ -3,6 +3,7 @@ node_modules/
 out/
 dist/
 build/
+.local-postgres/
 *.tsbuildinfo
 
 .env.local
@@ -26,6 +27,13 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 .npm/
+stderr.log
+stdout.log
+startup-error.log
+test-server.log
+server_old.js
+node_modules_old/
+node_modules_old*/
 
 .DS_Store
 Thumbs.db

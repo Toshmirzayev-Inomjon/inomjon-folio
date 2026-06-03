@@ -1,12 +1,22 @@
 const { createServer } = require("http");
-const { createReadStream, existsSync, statSync } = require("fs");
+const { appendFileSync, createReadStream, existsSync, statSync } = require("fs");
 const { extname, join, normalize } = require("path");
-const next = require("next");
 
-const dev = process.env.NODE_ENV !== "production";
-const hostname = "0.0.0.0";
-const port = Number(process.env.PORT || process.env.NODE_PORT || 3000);
+process.env.NODE_ENV = "production";
+
+const hostname = process.env.HOST || "0.0.0.0";
+const rawPort = process.env.PORT || process.env.NODE_PORT || "";
+const hasExplicitPort = rawPort !== "";
+const port = hasExplicitPort
+  ? /^\d+$/.test(String(rawPort))
+    ? Number(rawPort)
+    : String(rawPort)
+  : undefined;
+const nextPort = typeof port === "number" ? port : undefined;
 const staticRoot = join(__dirname, ".next", "static");
+const buildIdPath = join(__dirname, ".next", "BUILD_ID");
+const startupLogPath = join(__dirname, "startup-error.log");
+
 const mimeTypes = {
   ".css": "text/css; charset=utf-8",
   ".js": "application/javascript; charset=utf-8",
@@ -22,11 +32,59 @@ const mimeTypes = {
   ".ico": "image/x-icon"
 };
 
-const app = next({ dev, hostname, port });
-const handle = app.getRequestHandler();
+function writeStartupLog(error) {
+  const message = error instanceof Error ? `${error.stack || error.message}` : String(error);
+  appendFileSync(startupLogPath, `\n[${new Date().toISOString()}]\n${message}\n`);
+}
+
+function listen(server, label) {
+  if (!hasExplicitPort) {
+    server.listen(() => {
+      const address = server.address();
+      const target =
+        typeof address === "object" && address
+          ? `${address.address}:${address.port}`
+          : String(address || "default listener");
+      console.log(`${label} on ${target}`);
+    });
+    return;
+  }
+
+  if (typeof port === "number") {
+    server.listen(port, hostname, () => {
+      console.log(`${label} on http://${hostname}:${port}`);
+    });
+    return;
+  }
+
+  server.listen(port, () => {
+    console.log(`${label} on ${port}`);
+  });
+}
+
+function startDiagnosticServer(error) {
+  writeStartupLog(error);
+
+  const server = createServer((_req, res) => {
+    res.writeHead(503, {
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "no-store"
+    });
+    res.end(
+      [
+        "InomjonFolio startup failed.",
+        "Check startup-error.log and stderr.log in the application root.",
+        "",
+        error instanceof Error ? error.message : String(error)
+      ].join("\n")
+    );
+  });
+
+  listen(server, "Diagnostic server ready");
+}
 
 function serveNextStatic(req, res) {
-  const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
+  const url = new URL(req.url || "/", `http://${req.headers.host || "localhost"}`);
   if (!url.pathname.startsWith("/_next/static/")) {
     return false;
   }
@@ -45,19 +103,33 @@ function serveNextStatic(req, res) {
   return true;
 }
 
-app.prepare().then(() => {
-  createServer((req, res) => {
+function setNoCacheHeaders(res) {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+  res.setHeader("Surrogate-Control", "no-store");
+}
+
+async function main() {
+  if (!existsSync(buildIdPath)) {
+    throw new Error("Production build not found. Upload and unzip next-build.zip, then restart the Node.js app.");
+  }
+
+  const next = require("next");
+  const app = next({ dev: false, hostname, port: nextPort });
+  const handle = app.getRequestHandler();
+  await app.prepare();
+
+  const server = createServer((req, res) => {
     if (serveNextStatic(req, res)) {
       return;
     }
 
-    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-    res.setHeader("Pragma", "no-cache");
-    res.setHeader("Expires", "0");
-    res.setHeader("Surrogate-Control", "no-store");
-
+    setNoCacheHeaders(res);
     handle(req, res);
-  }).listen(port, hostname, () => {
-    console.log(`Ready on http://${hostname}:${port}`);
   });
-});
+
+  listen(server, "Ready");
+}
+
+main().catch(startDiagnosticServer);
