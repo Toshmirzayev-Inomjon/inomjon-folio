@@ -63,12 +63,23 @@ npm run prisma:seed
 
 BUILD_ID="$(cat .next/BUILD_ID)"
 
+# Older cPanel configurations for this app used app.js as the startup file.
+# Keep it synchronized so the selected startup filename cannot run stale code.
+cp server.js app.js
+
 # CloudLinux/Passenger watches this file and restarts the Node process.
 mkdir -p tmp
 touch tmp/restart.txt
 
 RESTARTED=false
 if command -v cloudlinux-selector >/dev/null 2>&1; then
+  cloudlinux-selector set \
+    --json \
+    --interpreter nodejs \
+    --user "$USER" \
+    --app-root "$APP_ROOT" \
+    --startup-file app.js || true
+
   if cloudlinux-selector restart \
     --json \
     --interpreter nodejs \
@@ -89,6 +100,7 @@ PAGE_JS="$(find .next/static/chunks/app -type f -name 'page-*.js' | head -1)"
 
 echo "CSS: $CSS"
 echo "Page JS: $PAGE_JS"
+echo "Startup fayli yangilandi: app.js"
 if [ "$RESTARTED" = true ]; then
   echo "Node ilova CloudLinux orqali restart qilindi."
 else

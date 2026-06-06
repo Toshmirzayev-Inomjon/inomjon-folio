@@ -32,6 +32,7 @@ stdout.log
 startup-error.log
 test-server.log
 server_old.js
+app.js
 node_modules_old/
 node_modules_old*/
 
