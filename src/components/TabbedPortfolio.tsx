@@ -268,7 +268,10 @@ function HomeTab({
       </section>
 
       <section className="grid gap-4">
-        <DeveloperCard />
+        <div className="grid gap-4 md:grid-cols-[0.78fr_1.22fr]">
+          <ProfilePortrait profile={profile} />
+          <DeveloperCard />
+        </div>
         <div className="grid gap-4 sm:grid-cols-3">
           <StatCard value="3+" label={t.yearsExperience} />
           <StatCard value={`${Math.max(projects.length, 10)}+`} label={t.projectsCompleted} />
@@ -287,6 +290,34 @@ function HomeTab({
       <section className="lg:col-span-2">
         <CtaSection t={t} onContact={onContact} />
       </section>
+    </div>
+  );
+}
+
+function ProfilePortrait({ profile, compact = false }: { profile: ProfileView; compact?: boolean }) {
+  const fallbackImage = "/uploads/profile-inomjon.webp";
+  const imageSrc = profile.heroImage || fallbackImage;
+
+  return (
+    <div className={`relative overflow-hidden rounded-[28px] border border-white/10 bg-[#0a1020]/86 shadow-[0_28px_90px_rgba(0,0,0,0.30)] ${compact ? "min-h-[420px]" : "min-h-[360px]"}`}>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_8%,rgba(99,102,241,0.22),transparent_18rem),linear-gradient(180deg,rgba(15,23,42,0.04),rgba(2,6,23,0.80))]" />
+      <img
+        src={imageSrc}
+        alt={`${profile.name} portreti`}
+        width={720}
+        height={745}
+        loading={compact ? "lazy" : "eager"}
+        decoding="async"
+        className="relative z-10 h-full min-h-[360px] w-full object-cover object-center"
+        onError={(event) => {
+          if (event.currentTarget.src.endsWith(fallbackImage)) return;
+          event.currentTarget.src = fallbackImage;
+        }}
+      />
+      <div className="absolute inset-x-4 bottom-4 z-20 rounded-2xl border border-white/10 bg-[#050812]/78 p-4 backdrop-blur-xl">
+        <p className="text-lg font-black text-white">{profile.name}</p>
+        <p className="mt-1 text-sm font-bold text-indigo-200">{profile.headline}</p>
+      </div>
     </div>
   );
 }
@@ -410,12 +441,15 @@ function ProjectCard({ project, index, t }: { project: ProjectView; index: numbe
 function AboutTab({ t, profile }: { t: Translation; profile: ProfileView }) {
   return (
     <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-      <section className="rounded-[28px] border border-white/10 bg-white/[0.055] p-6 sm:p-8">
-        <p className="text-sm font-black uppercase tracking-[0.2em] text-indigo-300">{t.about}</p>
-        <h1 className="mt-3 text-4xl font-black text-white">{profile.name}</h1>
-        <p className="mt-4 text-lg font-bold text-blue-100">{t.profileHeadline}</p>
-        <p className="mt-5 leading-8 text-slate-300">{t.aboutText}</p>
-      </section>
+      <div className="grid gap-6">
+        <ProfilePortrait profile={profile} compact />
+        <section className="rounded-[28px] border border-white/10 bg-white/[0.055] p-6 sm:p-8">
+          <p className="text-sm font-black uppercase tracking-[0.2em] text-indigo-300">{t.about}</p>
+          <h1 className="mt-3 text-4xl font-black text-white">{profile.name}</h1>
+          <p className="mt-4 text-lg font-bold text-blue-100">{t.profileHeadline}</p>
+          <p className="mt-5 leading-8 text-slate-300">{t.aboutText}</p>
+        </section>
+      </div>
       <ExperienceTab t={t} compact />
     </div>
   );

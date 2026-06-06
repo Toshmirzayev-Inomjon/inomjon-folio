@@ -38,7 +38,7 @@ export const personalProfile = {
   role: siteIdentity.role,
   headline: "Full-stack Dasturchi",
   bio: "Zamonaviy web ilovalar, portfolio saytlar, dashboardlar va biznes uchun qulay web platformalar yarataman. Next.js, React, TypeScript, Prisma va Tailwind CSS yordamida tez, chiroyli va foydali loyihalar quraman.",
-  heroImage: "/uploads/9254a80c-502d-4e3d-b71b-11818ba018b5.png",
+  heroImage: "/uploads/profile-inomjon.webp",
   cvUrl: "/api/cv",
   telegramUrl: "https://t.me/toshmirzayevinomjon",
   githubUrl: "https://github.com/Toshmirzayev-Inomjon",
