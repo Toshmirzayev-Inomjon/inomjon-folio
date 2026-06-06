@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -eo pipefail
 
 APP_DIR="${APP_DIR:-$HOME/repositories/inomjon-folio}"
 NODE_ENV_DIR="${NODE_ENV_DIR:-$HOME/nodevenv/repositories/inomjon-folio/22/bin/activate}"
@@ -8,9 +8,13 @@ PUBLIC_HTML="${PUBLIC_HTML:-$HOME/public_html}"
 cd "$APP_DIR"
 
 if [ -f "$NODE_ENV_DIR" ]; then
+  set +u
   # shellcheck disable=SC1090
   source "$NODE_ENV_DIR"
+  set -u
 fi
+
+set -u
 
 git pull origin main
 
