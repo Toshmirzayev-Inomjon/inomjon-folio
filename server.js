@@ -1,5 +1,5 @@
 const { createServer } = require("http");
-const { appendFileSync, createReadStream, existsSync, statSync } = require("fs");
+const { appendFileSync, createReadStream, existsSync, readFileSync, statSync } = require("fs");
 const { extname, join, normalize } = require("path");
 
 process.env.NODE_ENV = "production";
@@ -16,6 +16,7 @@ const nextPort = typeof port === "number" ? port : undefined;
 const staticRoot = join(__dirname, ".next", "static");
 const buildIdPath = join(__dirname, ".next", "BUILD_ID");
 const startupLogPath = join(__dirname, "startup-error.log");
+const buildId = existsSync(buildIdPath) ? readFileSync(buildIdPath, "utf8").trim() : "missing";
 
 const mimeTypes = {
   ".css": "text/css; charset=utf-8",
@@ -108,6 +109,7 @@ function setNoCacheHeaders(res) {
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
   res.setHeader("Surrogate-Control", "no-store");
+  res.setHeader("X-Inomjon-Build", buildId);
 }
 
 async function main() {
@@ -121,6 +123,15 @@ async function main() {
   await app.prepare();
 
   const server = createServer((req, res) => {
+    const requestUrl = new URL(req.url || "/", `http://${req.headers.host || "localhost"}`);
+
+    if (requestUrl.pathname === "/_deploy-health") {
+      setNoCacheHeaders(res);
+      res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+      res.end(JSON.stringify({ ok: true, buildId }));
+      return;
+    }
+
     if (serveNextStatic(req, res)) {
       return;
     }
