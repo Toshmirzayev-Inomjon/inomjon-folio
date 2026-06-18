@@ -12,12 +12,20 @@ export const profileSchema = z.object({
   name: z.string().min(2).max(80),
   headline: z.string().min(10).max(180),
   bio: z.string().min(20).max(900),
+  headlineUz: z.string().max(180).optional(),
+  headlineEn: z.string().max(180).optional(),
+  headlineRu: z.string().max(180).optional(),
+  bioUz: z.string().max(900).optional(),
+  bioEn: z.string().max(900).optional(),
+  bioRu: z.string().max(900).optional(),
   heroImage: z.string().min(1),
   cvUrl: urlOrLocalPathSchema.optional(),
   telegramUrl: z.string().url().or(z.literal("")).optional(),
   githubUrl: z.string().url().or(z.literal("")).optional(),
   linkedinUrl: z.string().url().or(z.literal("")).optional(),
-  instagramUrl: z.string().url().or(z.literal("")).optional()
+  instagramUrl: z.string().url().or(z.literal("")).optional(),
+  careerStartDate: z.string().date().or(z.literal("")).optional(),
+  happyClientsCount: z.coerce.number().int().min(0).max(999999).default(20)
 });
 
 export const projectSchema = z.object({

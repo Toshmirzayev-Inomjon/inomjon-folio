@@ -33,12 +33,20 @@ model Profile {
   name        String
   headline    String
   bio         String
+  headlineUz  String?
+  headlineEn  String?
+  headlineRu  String?
+  bioUz       String?
+  bioEn       String?
+  bioRu       String?
   heroImage   String
   cvUrl       String?
   telegramUrl String?
   githubUrl   String?
   linkedinUrl String?
   instagramUrl String?
+  careerStartDate DateTime?
+  happyClientsCount Int      @default(20)
   updatedAt   DateTime @updatedAt
 }
 

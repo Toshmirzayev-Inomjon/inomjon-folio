@@ -1,146 +1,112 @@
-import { prisma } from "@/lib/prisma";
-import { locationSeed, personalProfile, projectSeeds } from "@/data/siteData";
-import { skillIconUrl } from "@/lib/skill-icons";
+/**
+ * Data layer — all content fetched from the FastAPI backend.
+ * Set BACKEND_URL in .env (server-side only, no NEXT_PUBLIC_ prefix).
+ *
+ * Example .env:
+ *   BACKEND_URL=http://localhost:8000
+ */
+
+const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:8000";
+const API = `${BACKEND_URL}/api/v1`;
+
+// ─── Response types ────────────────────────────────────────────────────────────
+
+export type Tag = {
+  id: number;
+  name: string;
+  slug: string;
+};
 
 export type ProfileView = {
+  id: number;
   name: string;
-  headline: string;
-  bio: string;
-  heroImage: string;
-  cvUrl: string | null;
-  telegramUrl: string | null;
-  githubUrl: string | null;
-  linkedinUrl: string | null;
-  instagramUrl: string | null;
+  headline_uz: string | null;
+  headline_en: string | null;
+  headline_ru: string | null;
+  bio_uz: string | null;
+  bio_en: string | null;
+  bio_ru: string | null;
+  telegram_url: string | null;
+  github_url: string | null;
+  linkedin_url: string | null;
+  instagram_url: string | null;
+  cv_url: string | null;
+  career_start_date: string | null;
+  happy_clients_count: number;
+  updated_at: string;
 };
 
 export type ProjectView = {
-  id: string;
+  id: number;
   title: string;
   description: string;
-  imageUrl: string;
-  techStack: string;
-  visitUrl: string | null;
-  githubUrl: string | null;
+  tech_stack: string[];
+  github_link: string | null;
+  live_link: string | null;
   featured: boolean;
+  created_at: string;
+  tags: Tag[];
 };
 
 export type SkillView = {
-  id: string;
+  id: number;
   name: string;
   group: string | null;
-  imageUrl: string;
-  sortOrder: number;
+  sort_order: number;
 };
 
-export type LocationView = {
-  latitude: number;
-  longitude: number;
-  iframeUrl: string | null;
+export type PortfolioStatsView = {
+  project_count: number;
+  experience_years: number;
+  happy_clients_count: number;
 };
 
-const fallbackProfile: ProfileView = {
-  name: personalProfile.name,
-  headline: personalProfile.headline,
-  bio: personalProfile.bio,
-  heroImage: personalProfile.heroImage,
-  cvUrl: personalProfile.cvUrl,
-  telegramUrl: personalProfile.telegramUrl,
-  githubUrl: personalProfile.githubUrl,
-  linkedinUrl: personalProfile.linkedinUrl,
-  instagramUrl: personalProfile.instagramUrl
-};
+// ─── Fetch helpers ─────────────────────────────────────────────────────────────
 
-const fallbackProjects: ProjectView[] = projectSeeds.map((project, index) => ({
-  id: `fallback-project-${index}`,
-  ...project
-}));
+async function apiFetch<T>(path: string): Promise<T | null> {
+  try {
+    const res = await fetch(`${API}${path}`, {
+      next: { revalidate: 0 }, // force-dynamic equivalent for fetch cache
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as T;
+  } catch (err) {
+    console.error(`[data] fetch ${path} failed:`, err);
+    return null;
+  }
+}
 
-const fallbackSkills: SkillView[] = personalProfile.skills.map((name, index) => ({
-  id: `fallback-skill-${index}`,
-  name,
-  group: null,
-  imageUrl: skillIconUrl(name),
-  sortOrder: index
-}));
+// ─── Public API ────────────────────────────────────────────────────────────────
 
-const fallbackLocation: LocationView = {
-  latitude: locationSeed.latitude,
-  longitude: locationSeed.longitude,
-  iframeUrl: locationSeed.iframeUrl
-};
+export async function getProfileView(): Promise<ProfileView | null> {
+  return apiFetch<ProfileView>("/portfolio/profile");
+}
 
+export async function getProjectViews(limit?: number): Promise<ProjectView[]> {
+  const url = limit ? `/portfolio/projects?limit=${limit}` : "/portfolio/projects";
+  return (await apiFetch<ProjectView[]>(url)) ?? [];
+}
+
+export async function getSkillViews(): Promise<SkillView[]> {
+  return (await apiFetch<SkillView[]>("/portfolio/skills")) ?? [];
+}
+
+export async function getPortfolioStats(): Promise<PortfolioStatsView> {
+  const fallback: PortfolioStatsView = {
+    project_count: 0,
+    experience_years: 0,
+    happy_clients_count: 0,
+  };
+  return (await apiFetch<PortfolioStatsView>("/portfolio/stats")) ?? fallback;
+}
+
+/** Convenience: fetch all portfolio data in parallel. */
 export async function getSiteData() {
-  const [profile, projects, skills, location] = await Promise.all([getProfileView(), getProjectViews(), getSkillViews(), getLocationView()]);
-
-  return { profile, projects, skills, location };
-}
-
-export async function getProfileView() {
-  try {
-    return await prisma.profile.findUnique({
-      where: { id: "main" },
-      select: {
-        name: true,
-        headline: true,
-        bio: true,
-        heroImage: true,
-        cvUrl: true,
-        telegramUrl: true,
-        githubUrl: true,
-        linkedinUrl: true,
-        instagramUrl: true
-      }
-    });
-  } catch (error) {
-    console.error("Profile query failed; using fallback content.", error);
-    return fallbackProfile;
-  }
-}
-
-export async function getProjectViews(take?: number) {
-  try {
-    return await prisma.project.findMany({
-      take,
-      orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        imageUrl: true,
-        techStack: true,
-        visitUrl: true,
-        githubUrl: true,
-        featured: true
-      }
-    });
-  } catch (error) {
-    console.error("Project query failed; using fallback content.", error);
-    return typeof take === "number" ? fallbackProjects.slice(0, take) : fallbackProjects;
-  }
-}
-
-export async function getSkillViews() {
-  try {
-    return await prisma.$queryRaw<SkillView[]>`
-      SELECT id, name, "group", imageUrl, sortOrder
-      FROM Skill
-      ORDER BY sortOrder ASC, name ASC
-    `;
-  } catch (error) {
-    console.error("Skill query failed; using fallback content.", error);
-    return fallbackSkills;
-  }
-}
-
-export async function getLocationView() {
-  try {
-    return await prisma.locationSetting.findUnique({
-      where: { id: "main" },
-      select: { latitude: true, longitude: true, iframeUrl: true }
-    });
-  } catch (error) {
-    console.error("Location query failed; using fallback content.", error);
-    return fallbackLocation;
-  }
+  const [profile, projects, skills, stats] = await Promise.all([
+    getProfileView(),
+    getProjectViews(),
+    getSkillViews(),
+    getPortfolioStats(),
+  ]);
+  return { profile, projects, skills, stats };
 }

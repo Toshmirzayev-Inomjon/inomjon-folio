@@ -8,12 +8,20 @@ const personalProfile = {
   name: "Inomjon Toshmirzayev",
   headline: "Full-stack Dasturchi",
   bio: "Zamonaviy web ilovalar, portfolio saytlar, dashboardlar va biznes uchun qulay web platformalar yarataman. Next.js, React, TypeScript, Prisma va Tailwind CSS yordamida tez, chiroyli va foydali loyihalar quraman.",
+  headlineUz: "Full-stack Dasturchi",
+  headlineEn: "Full-stack Developer",
+  headlineRu: "Full-stack разработчик",
+  bioUz: "Zamonaviy web ilovalar, portfolio saytlar, dashboardlar va biznes uchun qulay web platformalar yarataman. Next.js, React, TypeScript, Prisma va Tailwind CSS yordamida tez, chiroyli va foydali loyihalar quraman.",
+  bioEn: "I build modern web apps, portfolio websites, dashboards and useful business platforms with Next.js, React, TypeScript, Prisma and Tailwind CSS.",
+  bioRu: "Создаю современные web-приложения, portfolio сайты, dashboard'ы и удобные business platforms на Next.js, React, TypeScript, Prisma и Tailwind CSS.",
   heroImage: "/uploads/profile-inomjon.webp",
   cvUrl: "/api/cv",
   telegramUrl: "https://t.me/toshmirzayevinomjon",
   githubUrl: "https://github.com/Toshmirzayev-Inomjon",
   linkedinUrl: "",
-  instagramUrl: ""
+  instagramUrl: "",
+  careerStartDate: "2023-01-01",
+  happyClientsCount: 20
 };
 
 const projectSeeds = [
@@ -98,14 +106,28 @@ async function main() {
     }
   });
 
-  await prisma.profile.upsert({
-    where: { id: "main" },
-    update: {},
-    create: {
-      id: "main",
-      ...personalProfile
-    }
-  });
+  await prisma.$executeRaw`
+    INSERT INTO Profile (
+      id, name, headline, bio, headlineUz, headlineEn, headlineRu, bioUz, bioEn, bioRu, heroImage, cvUrl,
+      telegramUrl, githubUrl, linkedinUrl, instagramUrl, careerStartDate, happyClientsCount, updatedAt
+    )
+    VALUES (
+      'main', ${personalProfile.name}, ${personalProfile.headline}, ${personalProfile.bio}, ${personalProfile.headlineUz},
+      ${personalProfile.headlineEn}, ${personalProfile.headlineRu}, ${personalProfile.bioUz}, ${personalProfile.bioEn}, ${personalProfile.bioRu},
+      ${personalProfile.heroImage}, ${personalProfile.cvUrl}, ${personalProfile.telegramUrl}, ${personalProfile.githubUrl},
+      ${personalProfile.linkedinUrl}, ${personalProfile.instagramUrl}, ${personalProfile.careerStartDate}, ${personalProfile.happyClientsCount}, datetime('now')
+    )
+    ON CONFLICT(id) DO UPDATE SET
+      headlineUz = COALESCE(Profile.headlineUz, excluded.headlineUz),
+      headlineEn = COALESCE(Profile.headlineEn, excluded.headlineEn),
+      headlineRu = COALESCE(Profile.headlineRu, excluded.headlineRu),
+      bioUz = COALESCE(Profile.bioUz, excluded.bioUz),
+      bioEn = COALESCE(Profile.bioEn, excluded.bioEn),
+      bioRu = COALESCE(Profile.bioRu, excluded.bioRu),
+      careerStartDate = COALESCE(Profile.careerStartDate, excluded.careerStartDate),
+      happyClientsCount = COALESCE(Profile.happyClientsCount, excluded.happyClientsCount),
+      updatedAt = datetime('now')
+  `;
 
   await prisma.locationSetting.upsert({
     where: { id: "main" },
