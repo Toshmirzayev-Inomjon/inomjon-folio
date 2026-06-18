@@ -41,15 +41,6 @@ export function ProfileCard() {
           </div>
 
           {/* Status pill */}
-          <div className="mt-4 flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-50 px-3 py-2 dark:bg-emerald-500/5">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-            </span>
-            <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
-              Open to projects
-            </span>
-          </div>
         </div>
       </div>
     </motion.div>

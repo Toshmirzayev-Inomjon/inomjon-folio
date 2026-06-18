@@ -13,17 +13,6 @@ export function HeroSection() {
 
   return (
     <div className="flex flex-col justify-center">
-      {/* Available badge */}
-      <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={ft(0)} className="mb-6">
-        <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-emerald-700 dark:bg-emerald-500/5 dark:text-emerald-400">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-          </span>
-          {t.available}
-        </span>
-      </motion.div>
-
       {/* Name */}
       <motion.h1
         initial={{ opacity: 0, y: 24 }}
