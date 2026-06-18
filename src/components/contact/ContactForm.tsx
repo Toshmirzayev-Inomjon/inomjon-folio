@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, type Transition } from "framer-motion";
 import { Send } from "lucide-react";
 import { useLanguage } from "@/providers/language-provider";
 
@@ -17,7 +17,6 @@ export function ContactForm() {
   const handleSend = () => {
     if (!name.trim() || !email.trim() || !message.trim()) return;
     setStatus("sending");
-    // Simulate async send — replace with real logic if needed
     setTimeout(() => {
       setStatus("sent");
       setName("");
@@ -28,16 +27,16 @@ export function ContactForm() {
   };
 
   const inputClass =
-    "w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none transition-colors focus:border-white/20 focus:bg-white/[0.05]";
+    "w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-colors focus:border-zinc-400 focus:bg-white dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-white dark:placeholder:text-zinc-600 dark:focus:border-white/20 dark:focus:bg-white/[0.05]";
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.55, ease: "easeOut", delay: 0.1 }}
-      className="rounded-2xl border border-white/[0.07] bg-[#111111] p-6"
+      transition={{ duration: 0.55, ease: "easeOut", delay: 0.1 } as Transition}
+      className="rounded-2xl border border-black/[0.08] bg-white p-6 shadow-sm dark:border-white/[0.07] dark:bg-[#111111] dark:shadow-none"
     >
-      <p className="mb-5 text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-500">
+      <p className="mb-5 text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-400 dark:text-zinc-500">
         {t.sendLabel}
       </p>
 
@@ -68,7 +67,7 @@ export function ContactForm() {
       <button
         onClick={handleSend}
         disabled={status !== "idle"}
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3 text-sm font-semibold text-black transition-all hover:bg-zinc-100 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 py-3 text-sm font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-zinc-100"
       >
         {status === "idle" && (
           <>

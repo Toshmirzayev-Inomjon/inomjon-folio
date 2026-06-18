@@ -22,7 +22,7 @@ export function ContactInfoCards() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={ft(0)}
-        className="mb-6 text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-500"
+        className="mb-6 text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-400 dark:text-zinc-500"
       >
         {t.contactInfoLabel}
       </motion.p>
@@ -33,14 +33,16 @@ export function ContactInfoCards() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={ft(0.07 * i)}
-            className="flex items-center gap-4 rounded-2xl border border-white/[0.07] bg-[#111111] p-4"
+            className="flex items-center gap-4 rounded-2xl border border-black/[0.08] bg-white p-4 shadow-sm dark:border-white/[0.07] dark:bg-[#111111] dark:shadow-none"
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.03]">
-              <Icon size={16} className="text-zinc-400" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-zinc-50 dark:border-white/[0.08] dark:bg-white/[0.03]">
+              <Icon size={16} className="text-zinc-500 dark:text-zinc-400" />
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">{label}</p>
-              <p className="mt-0.5 text-sm font-medium text-white">{value}</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-400 dark:text-zinc-500">
+                {label}
+              </p>
+              <p className="mt-0.5 text-sm font-medium text-zinc-900 dark:text-white">{value}</p>
             </div>
           </motion.div>
         ))}

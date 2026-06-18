@@ -26,7 +26,7 @@ export default function ContactPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.07 }}
-            className="mt-4 max-w-2xl font-serif text-3xl font-bold leading-tight text-white sm:text-4xl"
+            className="mt-4 max-w-2xl font-serif text-3xl font-bold leading-tight text-zinc-900 dark:text-white sm:text-4xl"
           >
             {t.contactHeadline}
           </motion.h1>

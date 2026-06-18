@@ -15,7 +15,7 @@ export function HeroSection() {
     <div className="flex flex-col justify-center">
       {/* Available badge */}
       <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={ft(0)} className="mb-6">
-        <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-emerald-400">
+        <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-emerald-700 dark:bg-emerald-500/5 dark:text-emerald-400">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
@@ -29,11 +29,11 @@ export function HeroSection() {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={ft(0.08)}
-        className="font-serif text-6xl font-bold leading-[1.05] tracking-tight text-white sm:text-7xl lg:text-8xl"
+        className="font-serif text-6xl font-bold leading-[1.05] tracking-tight text-zinc-900 dark:text-white sm:text-7xl lg:text-8xl"
       >
         {t.heroTitle1}
         <br />
-        <span className="text-zinc-400">{t.heroTitle2}</span>
+        <span className="text-zinc-400 dark:text-zinc-500">{t.heroTitle2}</span>
       </motion.h1>
 
       {/* Subtitle */}
@@ -41,7 +41,7 @@ export function HeroSection() {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={ft(0.16)}
-        className="mt-5 text-base font-medium uppercase tracking-[0.2em] text-zinc-500"
+        className="mt-5 text-base font-medium uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500"
       >
         {t.heroSubtitle}
       </motion.p>
@@ -51,7 +51,7 @@ export function HeroSection() {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={ft(0.22)}
-        className="mt-5 max-w-md text-sm leading-7 text-zinc-400"
+        className="mt-5 max-w-md text-sm leading-7 text-zinc-500 dark:text-zinc-400"
       >
         {t.heroDesc}
       </motion.p>
@@ -65,14 +65,14 @@ export function HeroSection() {
       >
         <Link
           href="/projects"
-          className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-black transition-all hover:bg-zinc-100 active:scale-95"
+          className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-zinc-700 active:scale-95 dark:bg-white dark:text-black dark:hover:bg-zinc-100"
         >
           {t.viewProjects}
           <ArrowRight size={15} />
         </Link>
         <Link
           href="/about"
-          className="inline-flex items-center gap-2 rounded-full border border-white/10 px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-white/5 active:scale-95"
+          className="inline-flex items-center gap-2 rounded-full border border-zinc-300 px-6 py-2.5 text-sm font-semibold text-zinc-700 transition-all hover:border-zinc-400 hover:bg-zinc-100 active:scale-95 dark:border-white/10 dark:text-white dark:hover:bg-white/5"
         >
           {t.learnMore}
         </Link>
@@ -97,7 +97,7 @@ export function HeroSection() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={label}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-zinc-500 transition-all hover:border-white/20 hover:text-white hover:scale-110"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200 text-zinc-400 transition-all hover:border-zinc-400 hover:text-zinc-900 hover:scale-110 dark:border-white/10 dark:text-zinc-500 dark:hover:border-white/20 dark:hover:text-white"
           >
             <Icon size={15} />
           </a>
