@@ -26,6 +26,9 @@ export type ProfileView = {
   bio_uz: string | null;
   bio_en: string | null;
   bio_ru: string | null;
+  phone_number: string | null;
+  contact_email: string | null;
+  location: string | null;
   telegram_url: string | null;
   github_url: string | null;
   linkedin_url: string | null;

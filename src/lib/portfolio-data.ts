@@ -71,8 +71,8 @@ export const projects: Project[] = [
 ];
 
 export const contactData = {
-  phone: "+998 93 123 45 67",
-  email: "inomjon@toshmirzayev-inomjon.online",
+  phone: "+998951840751",
+  email: "toshmirzayevinomjon@gmail.com",
   location: "Qashqadaryo, Uzbekistan",
 };
 
@@ -80,5 +80,5 @@ export const socialLinks = {
   github: "https://github.com/Toshmirzayev-Inomjon",
   telegram: "https://t.me/toshmirzayevinomjon",
   linkedin: "https://linkedin.com/in/toshmirzayev-inomjon",
-  email: "mailto:inomjon@toshmirzayev-inomjon.online",
+  email: "mailto:toshmirzayevinomjon@gmail.com",
 };
