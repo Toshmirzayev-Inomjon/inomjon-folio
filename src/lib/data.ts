@@ -23,6 +23,14 @@ export type ProjectView = {
   featured: boolean;
 };
 
+export type SkillView = {
+  id: string;
+  name: string;
+  group: string | null;
+  imageUrl: string;
+  sortOrder: number;
+};
+
 export type LocationView = {
   latitude: number;
   longitude: number;
@@ -30,13 +38,14 @@ export type LocationView = {
 };
 
 export async function getSiteData() {
-  const [profile, projects, location] = await Promise.all([
+  const [profile, projects, skills, location] = await Promise.all([
     prisma.profile.findUnique({ where: { id: "main" } }),
     prisma.project.findMany({ orderBy: [{ featured: "desc" }, { createdAt: "desc" }] }),
+    getSkillViews(),
     prisma.locationSetting.findUnique({ where: { id: "main" } })
   ]);
 
-  return { profile, projects, location };
+  return { profile, projects, skills, location };
 }
 
 export async function getProfileView() {
@@ -71,6 +80,14 @@ export async function getProjectViews(take?: number) {
       featured: true
     }
   });
+}
+
+export async function getSkillViews() {
+  return prisma.$queryRaw<SkillView[]>`
+    SELECT id, name, "group", imageUrl, sortOrder
+    FROM Skill
+    ORDER BY sortOrder ASC, name ASC
+  `;
 }
 
 export async function getLocationView() {

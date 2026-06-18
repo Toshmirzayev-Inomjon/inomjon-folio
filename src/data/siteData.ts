@@ -397,11 +397,13 @@ export const adminContent = {
   nav: [
     { label: "Profil", href: "profile", icon: "settings" },
     { label: "Loyihalar", href: "projects", icon: "folder" },
+    { label: "Skillar", href: "skills", icon: "code" },
     { label: "Lokatsiya", href: "location", icon: "location" },
     { label: "Xabarlar", href: "inbox", icon: "inbox" }
   ],
   stats: [
     { label: "Loyihalar", valueKey: "projects", icon: "folder" },
+    { label: "Skillar", valueKey: "skills", icon: "code" },
     { label: "Xabarlar", valueKey: "messages", icon: "inbox" },
     { label: "Profil", value: "Faol", icon: "settings" }
   ],
@@ -415,11 +417,13 @@ export const adminContent = {
     profileEdit: "Profilni tahrirlash",
     mapsControl: "Xaritani boshqarish",
     projectCrud: "Loyihalarni boshqarish",
+    skillCrud: "Skillarni boshqarish",
     inbox: "Xabarlar",
     noMessages: "Hozircha xabar yo'q.",
     uploadImage: "Rasm yuklash",
     uploadCv: "CV PDF yuklash",
     newProjectPreview: "Yangi loyiha ko'rinishi",
+    newSkillPreview: "Yangi skill ko'rinishi",
     featured: "Tanlangan"
   },
   form: {
@@ -439,19 +443,27 @@ export const adminContent = {
     imageUrl: "Rasm URL",
     description: "Tavsif",
     techTags: "Texnologiya teglari",
-    visitUrl: "Sayt URL"
+    visitUrl: "Sayt URL",
+    skillName: "Skill nomi",
+    skillGroup: "Guruh",
+    skillIconUrl: "Icon URL",
+    sortOrder: "Tartib"
   },
   placeholders: {
     projectTitle: "Admin Dashboard",
     imageUrl: "https://...",
     projectDescription: "Loyiha tavsifi",
     techTags: "React, Next.js, Prisma, Tailwind CSS",
-    githubUrl: "https://github.com/Toshmirzayev-Inomjon"
+    githubUrl: "https://github.com/Toshmirzayev-Inomjon",
+    skillName: "Python",
+    skillGroup: "Backend",
+    skillIconUrl: "Bo'sh qoldiring: avtomatik icon qo'yiladi"
   },
   actions: {
     saveProfile: "Profilni saqlash",
     saveLocation: "Lokatsiyani saqlash",
     createProject: "Loyiha yaratish",
+    createSkill: "Skill yaratish",
     save: "Saqlash",
     delete: "O'chirish",
     deleteMessage: "Xabarni o'chirish"

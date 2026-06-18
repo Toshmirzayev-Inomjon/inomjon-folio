@@ -1,13 +1,14 @@
 import { TabbedPortfolio } from "@/components/TabbedPortfolio";
 import { siteIdentity } from "@/data/siteData";
-import { getLocationView, getProfileView, getProjectViews } from "@/lib/data";
+import { getLocationView, getProfileView, getProjectViews, getSkillViews } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [profile, projects, location] = await Promise.all([
+  const [profile, projects, skills, location] = await Promise.all([
     getProfileView(),
     getProjectViews(),
+    getSkillViews(),
     getLocationView()
   ]);
 
@@ -22,5 +23,5 @@ export default async function HomePage() {
     );
   }
 
-  return <TabbedPortfolio profile={profile} projects={projects} location={location} />;
+  return <TabbedPortfolio profile={profile} projects={projects} skills={skills} location={location} />;
 }

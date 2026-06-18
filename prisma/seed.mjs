@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { randomUUID } from "crypto";
 
 const prisma = new PrismaClient();
 
@@ -54,6 +55,34 @@ const projectSeeds = [
   }
 ];
 
+const skillIconSlugs = {
+  "next.js": "nextdotjs",
+  "node.js": "nodedotjs",
+  nodejs: "nodedotjs",
+  postgresql: "postgresql",
+  "tailwind css": "tailwindcss",
+  tailwind: "tailwindcss",
+  typescript: "typescript",
+  javascript: "javascript"
+};
+
+const skillSeeds = [
+  { name: "React", group: "Frontend" },
+  { name: "Next.js", group: "Frontend" },
+  { name: "TypeScript", group: "Frontend" },
+  { name: "Tailwind CSS", group: "Design" },
+  { name: "Prisma", group: "Database" },
+  { name: "Node.js", group: "Backend" },
+  { name: "PostgreSQL", group: "Database" },
+  { name: "Git", group: "Tooling" }
+];
+
+function skillIconUrl(name) {
+  const normalized = name.trim().toLowerCase();
+  const slug = skillIconSlugs[normalized] ?? normalized.replace(/\+/g, "plus").replace(/#/g, "sharp").replace(/[^a-z0-9]/g, "");
+  return `https://cdn.simpleicons.org/${slug}`;
+}
+
 async function main() {
   const adminEmail = process.env.ADMIN_EMAIL ?? "admin@example.com";
   const adminPassword = process.env.ADMIN_PASSWORD ?? "ChangeMe123!";
@@ -94,6 +123,18 @@ async function main() {
     if (!exists) {
       await prisma.project.create({ data: project });
     }
+  }
+
+  for (const [index, skill] of skillSeeds.entries()) {
+    await prisma.$executeRaw`
+      INSERT INTO Skill (id, name, "group", imageUrl, sortOrder, createdAt, updatedAt)
+      VALUES (${randomUUID()}, ${skill.name}, ${skill.group}, ${skillIconUrl(skill.name)}, ${index}, datetime('now'), datetime('now'))
+      ON CONFLICT(name) DO UPDATE SET
+        "group" = excluded."group",
+        imageUrl = excluded.imageUrl,
+        sortOrder = excluded.sortOrder,
+        updatedAt = datetime('now')
+    `;
   }
 }
 

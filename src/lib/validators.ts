@@ -30,6 +30,13 @@ export const projectSchema = z.object({
   featured: z.boolean().default(false)
 });
 
+export const skillSchema = z.object({
+  name: z.string().min(2).max(60),
+  group: z.string().max(80).optional(),
+  imageUrl: z.string().min(1).optional(),
+  sortOrder: z.coerce.number().int().min(0).max(9999).default(0)
+});
+
 export const locationSchema = z.object({
   latitude: z.coerce.number().min(-90).max(90),
   longitude: z.coerce.number().min(-180).max(180),

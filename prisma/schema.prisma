@@ -55,6 +55,16 @@ model Project {
   updatedAt   DateTime @updatedAt
 }
 
+model Skill {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  group     String?
+  imageUrl  String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model LocationSetting {
   id        String   @id @default("main")
   latitude  Float

@@ -3,12 +3,14 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type ChangeEvent } from "react";
 import type { LocationSetting, Message, Profile, Project } from "@prisma/client";
-import { FileUp, FolderKanban, ImageUp, Inbox, LayoutDashboard, MapPinned, Plus, Save, Settings, Trash2, type LucideIcon } from "lucide-react";
+import { Code2, FileUp, FolderKanban, ImageUp, Inbox, LayoutDashboard, MapPinned, Plus, Save, Settings, Trash2, type LucideIcon } from "lucide-react";
 import { adminContent, siteIdentity } from "@/data/siteData";
+import type { SkillView } from "@/lib/data";
 
 type Props = {
   profile: Profile;
   projects: Project[];
+  skills: SkillView[];
   location: LocationSetting;
   messages: Message[];
 };
@@ -50,23 +52,27 @@ function ImagePreview({ src, alt, className }: { src: string; alt: string; class
 }
 
 const adminIconMap: Record<(typeof adminContent.nav)[number]["icon"] | (typeof adminContent.stats)[number]["icon"], LucideIcon> = {
+  code: Code2,
   settings: Settings,
   folder: FolderKanban,
   location: MapPinned,
   inbox: Inbox
 };
 
-export function AdminPanel({ profile, projects, location, messages }: Props) {
+export function AdminPanel({ profile, projects, skills, location, messages }: Props) {
   const router = useRouter();
   const [notice, setNotice] = useState("");
   const [profileImage, setProfileImage] = useState(profile.heroImage);
   const [createProjectImage, setCreateProjectImage] = useState("");
   const [projectImages, setProjectImages] = useState<Record<string, string>>(() => Object.fromEntries(projects.map((project) => [project.id, project.imageUrl])));
+  const [createSkillImage, setCreateSkillImage] = useState("");
+  const [skillImages, setSkillImages] = useState<Record<string, string>>(() => Object.fromEntries(skills.map((skill) => [skill.id, skill.imageUrl])));
 
   useEffect(() => {
     setProfileImage(profile.heroImage);
     setProjectImages(Object.fromEntries(projects.map((project) => [project.id, project.imageUrl])));
-  }, [profile.heroImage, projects]);
+    setSkillImages(Object.fromEntries(skills.map((skill) => [skill.id, skill.imageUrl])));
+  }, [profile.heroImage, projects, skills]);
 
   async function requestJson(path: string, method: "POST" | "PUT" | "DELETE", payload?: Record<string, unknown>) {
     const res = await fetch(path, {
@@ -141,13 +147,30 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
     await requestJson(`/api/admin/projects?id=${id}`, "DELETE");
   }
 
+  async function createSkill(form: HTMLFormElement) {
+    const payload = Object.fromEntries(new FormData(form));
+    const ok = await requestJson("/api/admin/skills", "POST", payload);
+    if (ok) {
+      form.reset();
+      setCreateSkillImage("");
+    }
+  }
+
+  async function saveSkill(id: string, form: HTMLFormElement) {
+    await requestJson(`/api/admin/skills?id=${id}`, "PUT", Object.fromEntries(new FormData(form)));
+  }
+
+  async function deleteSkill(id: string) {
+    await requestJson(`/api/admin/skills?id=${id}`, "DELETE");
+  }
+
   async function deleteMessage(id: string) {
     await requestJson(`/api/admin/messages?id=${id}`, "DELETE");
   }
 
   const stats = adminContent.stats.map((stat) => ({
     label: stat.label,
-    value: "value" in stat ? stat.value : stat.valueKey === "projects" ? projects.length : messages.length,
+    value: "value" in stat ? stat.value : stat.valueKey === "projects" ? projects.length : stat.valueKey === "skills" ? skills.length : messages.length,
     icon: adminIconMap[stat.icon]
   }));
 
@@ -354,6 +377,84 @@ export function AdminPanel({ profile, projects, location, messages }: Props) {
                     <div className="flex flex-wrap gap-2 sm:col-span-2">
                       <button className="btn-primary"><Save size={17} /> {adminContent.actions.save}</button>
                       <button type="button" onClick={() => deleteProject(project.id)} className="inline-flex items-center gap-2 rounded-xl border border-rose-400/20 bg-rose-500/10 px-5 py-3 font-black text-rose-200 transition hover:bg-rose-500/20">
+                        <Trash2 size={17} /> {adminContent.actions.delete}
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              ))}
+            </div>
+          </section>
+
+          <section id="skills" className="premium-card rounded-[30px] p-6 sm:p-8">
+            <div className="mb-6 flex items-center gap-2">
+              <Code2 className="text-indigo-300" size={22} />
+              <h2 className="text-2xl font-black text-white">{adminContent.labels.skillCrud}</h2>
+            </div>
+
+            <form
+              className="grid gap-4 rounded-3xl bg-white/5 p-4 ring-1 ring-white/10 lg:grid-cols-[160px_minmax(0,1fr)]"
+              onSubmit={(event) => {
+                event.preventDefault();
+                createSkill(event.currentTarget);
+              }}
+            >
+              <div className="rounded-3xl bg-white/5 p-3 ring-1 ring-white/10">
+                <ImagePreview src={createSkillImage} alt={adminContent.labels.newSkillPreview} className="aspect-square w-full rounded-2xl object-contain p-7" />
+                <label className="mt-3 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-sm font-black text-white">
+                  <ImageUp size={17} />
+                  {adminContent.labels.uploadImage}
+                  <input type="file" accept="image/*" className="hidden" onChange={(event) => uploadImageToForm(event, "imageUrl", setCreateSkillImage)} />
+                </label>
+              </div>
+
+              <div className="grid gap-4 lg:grid-cols-2">
+                <label className="label">{adminContent.form.skillName}<input className="field" name="name" placeholder={adminContent.placeholders.skillName} /></label>
+                <label className="label">{adminContent.form.skillGroup}<input className="field" name="group" placeholder={adminContent.placeholders.skillGroup} /></label>
+                <label className="label">{adminContent.form.skillIconUrl}<input className="field" name="imageUrl" placeholder={adminContent.placeholders.skillIconUrl} onChange={(event) => setCreateSkillImage(previewableImageSrc(event.currentTarget.value))} /></label>
+                <label className="label">{adminContent.form.sortOrder}<input className="field" name="sortOrder" type="number" min="0" defaultValue="0" /></label>
+                <button className="btn-primary lg:col-span-2"><Plus size={17} /> {adminContent.actions.createSkill}</button>
+              </div>
+            </form>
+
+            <div className="mt-6 grid gap-5">
+              {skills.map((skill) => (
+                <form
+                  key={skill.id}
+                  className="grid gap-4 rounded-3xl bg-white/5 p-4 ring-1 ring-white/10 xl:grid-cols-[160px_minmax(0,1fr)]"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    saveSkill(skill.id, event.currentTarget);
+                  }}
+                >
+                  <div className="rounded-3xl bg-white/5 p-3 ring-1 ring-white/10">
+                    <ImagePreview src={skillImages[skill.id] ?? skill.imageUrl} alt={skill.name} className="aspect-square w-full rounded-2xl object-contain p-7" />
+                    <label className="mt-3 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-sm font-black text-white">
+                      <ImageUp size={17} />
+                      {adminContent.labels.uploadImage}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(event) =>
+                          uploadImageToForm(event, "imageUrl", (url) => {
+                            setSkillImages((current) => ({ ...current, [skill.id]: url }));
+                          })
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <label className="label">{adminContent.form.skillName}<input className="field" name="name" defaultValue={skill.name} /></label>
+                    <label className="label">{adminContent.form.skillGroup}<input className="field" name="group" defaultValue={skill.group ?? ""} /></label>
+                    <label className="label">{adminContent.form.skillIconUrl}<input className="field" name="imageUrl" defaultValue={skill.imageUrl} onChange={(event) => {
+                      const preview = previewableImageSrc(event.currentTarget.value);
+                      if (preview) setSkillImages((current) => ({ ...current, [skill.id]: preview }));
+                    }} /></label>
+                    <label className="label">{adminContent.form.sortOrder}<input className="field" name="sortOrder" type="number" min="0" defaultValue={skill.sortOrder} /></label>
+                    <div className="flex flex-wrap gap-2 sm:col-span-2">
+                      <button className="btn-primary"><Save size={17} /> {adminContent.actions.save}</button>
+                      <button type="button" onClick={() => deleteSkill(skill.id)} className="inline-flex items-center gap-2 rounded-xl border border-rose-400/20 bg-rose-500/10 px-5 py-3 font-black text-rose-200 transition hover:bg-rose-500/20">
                         <Trash2 size={17} /> {adminContent.actions.delete}
                       </button>
                     </div>

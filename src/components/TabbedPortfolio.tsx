@@ -23,9 +23,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { ContactForm } from "@/components/ContactForm";
-import type { LocationView, ProfileView, ProjectView } from "@/lib/data";
+import type { LocationView, ProfileView, ProjectView, SkillView } from "@/lib/data";
 import {
-  expertAreas,
   languages,
   portfolioTabs,
   siteIdentity,
@@ -96,13 +95,26 @@ const fallbackProjects = [
   }
 ] satisfies ProjectView[];
 
+const fallbackSkills = [
+  { id: "react", name: "React", group: "Frontend", imageUrl: "https://cdn.simpleicons.org/react", sortOrder: 0 },
+  { id: "nextjs", name: "Next.js", group: "Frontend", imageUrl: "https://cdn.simpleicons.org/nextdotjs", sortOrder: 1 },
+  { id: "typescript", name: "TypeScript", group: "Frontend", imageUrl: "https://cdn.simpleicons.org/typescript", sortOrder: 2 },
+  { id: "tailwind", name: "Tailwind CSS", group: "Design", imageUrl: "https://cdn.simpleicons.org/tailwindcss", sortOrder: 3 },
+  { id: "prisma", name: "Prisma", group: "Database", imageUrl: "https://cdn.simpleicons.org/prisma", sortOrder: 4 },
+  { id: "nodejs", name: "Node.js", group: "Backend", imageUrl: "https://cdn.simpleicons.org/nodedotjs", sortOrder: 5 },
+  { id: "postgresql", name: "PostgreSQL", group: "Database", imageUrl: "https://cdn.simpleicons.org/postgresql", sortOrder: 6 },
+  { id: "git", name: "Git", group: "Tooling", imageUrl: "https://cdn.simpleicons.org/git", sortOrder: 7 }
+] satisfies SkillView[];
+
 export function TabbedPortfolio({
   profile,
   projects,
+  skills,
   location
 }: {
   profile: ProfileView;
   projects: ProjectView[];
+  skills: SkillView[];
   location: LocationView;
 }) {
   const [activeTab, setActiveTab] = useState<TabId>("home");
@@ -110,6 +122,7 @@ export function TabbedPortfolio({
   const [mobileOpen, setMobileOpen] = useState(false);
   const t = translations[language];
   const displayProjects = normalizeProjects(projects);
+  const displaySkills = skills.length ? skills : fallbackSkills;
   const socials = socialLinks
     .map((item) => ({ href: profile[item.field], label: item.label, icon: socialIconMap[item.icon] }))
     .filter((item): item is SocialLink => Boolean(item.href));
@@ -136,7 +149,7 @@ export function TabbedPortfolio({
         />
 
         <div className="py-6 sm:py-8">
-          {activeTab === "home" && <HomeTab t={t} profile={profile} socials={socials} projects={displayProjects} onContact={() => changeTab("contact")} onProjects={() => changeTab("portfolio")} />}
+          {activeTab === "home" && <HomeTab t={t} profile={profile} socials={socials} projects={displayProjects} skills={displaySkills} onContact={() => changeTab("contact")} onProjects={() => changeTab("portfolio")} />}
           {activeTab === "about" && <AboutTab t={t} profile={profile} />}
           {activeTab === "portfolio" && <ProjectsTab t={t} projects={displayProjects} />}
           {activeTab === "experience" && <ExperienceTab t={t} />}
@@ -229,6 +242,7 @@ function HomeTab({
   profile,
   socials,
   projects,
+  skills,
   onContact,
   onProjects
 }: {
@@ -236,13 +250,14 @@ function HomeTab({
   profile: ProfileView;
   socials: SocialLink[];
   projects: ProjectView[];
+  skills: SkillView[];
   onContact: () => void;
   onProjects: () => void;
 }) {
   return (
     <div className="grid gap-5">
       <HeroBanner t={t} profile={profile} socials={socials} projects={projects} onContact={onContact} onProjects={onProjects} />
-      <SkillsSection t={t} />
+      <SkillsSection t={t} skills={skills} />
       <ProjectsGrid t={t} projects={projects.slice(0, 3)} compact />
       <ExperienceTab t={t} compact />
       <CtaSection t={t} onContact={onContact} />
@@ -420,7 +435,7 @@ function StatCard({ value, label }: { value: string; label: string }) {
   );
 }
 
-function SkillsSection({ t }: { t: Translation }) {
+function SkillsSection({ t, skills }: { t: Translation; skills: SkillView[] }) {
   return (
     <section className="rounded-[28px] border border-white/10 bg-white/[0.045] p-6 backdrop-blur-xl sm:p-8">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
@@ -430,22 +445,23 @@ function SkillsSection({ t }: { t: Translation }) {
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
-        {expertAreas.map((item) => (
-          <SkillTile key={item.name} name={item.name} />
+        {skills.map((item) => (
+          <SkillTile key={item.id} skill={item} />
         ))}
       </div>
     </section>
   );
 }
 
-function SkillTile({ name }: { name: string }) {
-  const Icon = skillIconFor(name);
+function SkillTile({ skill }: { skill: SkillView }) {
+  const FallbackIcon = skillIconFor(skill.name);
+  const previewSrc = previewableImage(skill.imageUrl);
   return (
     <div className="rounded-2xl border border-white/10 bg-[#0c1224]/[0.78] p-4 text-center transition hover:-translate-y-1 hover:border-indigo-300/40 hover:bg-indigo-500/10">
       <div className="mx-auto grid h-11 w-11 place-items-center rounded-xl bg-indigo-500/[0.14] text-indigo-200">
-        <Icon size={21} />
+        {previewSrc ? <img src={previewSrc} alt={`${skill.name} icon`} className="h-6 w-6 object-contain" loading="lazy" decoding="async" /> : <FallbackIcon size={21} />}
       </div>
-      <p className="mt-3 break-words text-sm font-black text-slate-100">{name}</p>
+      <p className="mt-3 break-words text-sm font-black text-slate-100">{skill.name}</p>
     </div>
   );
 }
