@@ -4,6 +4,16 @@ const path = require("path");
 const nextConfig = {
   outputFileTracingRoot: process.cwd(),
 
+  // TypeScript is checked separately with `npm run lint`. Skipping the
+  // duplicate build-time check keeps cPanel's memory usage within its limit.
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
+  experimental: {
+    cpus: 1,
+  },
+
   webpack(config) {
     config.resolve.alias["@"] = path.resolve(__dirname, "src");
     return config;
