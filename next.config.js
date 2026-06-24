@@ -1,6 +1,13 @@
+const path = require("path");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   outputFileTracingRoot: process.cwd(),
+
+  webpack(config) {
+    config.resolve.alias["@"] = path.resolve(__dirname, "src");
+    return config;
+  },
 
   // Proxy /api/v1/* → FastAPI backend (works on all domains, no CORS issues)
   async rewrites() {
