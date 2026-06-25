@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "About | Inomjon Toshmirzayev",
-  description: "Backend / Full-stack developer from Qashqadaryo, Uzbekistan.",
+  description: "Backend Developer from Qashqadaryo, Uzbekistan.",
 };
 
 export default async function AboutPage() {

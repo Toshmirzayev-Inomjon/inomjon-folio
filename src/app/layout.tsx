@@ -17,13 +17,13 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://toshmirzayev-inomjon.online"),
   title: "Inomjon Toshmirzayev | Backend Developer",
   description:
-    "Backend / Full-stack Developer building modern APIs and web platforms with Python, FastAPI, Django, and PostgreSQL.",
+    "Backend Developer building modern APIs and web platforms with Python, FastAPI, Django, and PostgreSQL.",
   authors: [{ name: "Inomjon Toshmirzayev", url: "https://toshmirzayev-inomjon.online" }],
   creator: "Inomjon Toshmirzayev",
   icons: { icon: "/favicon.ico" },
   openGraph: {
     title: "Inomjon Toshmirzayev | Backend Developer",
-    description: "Backend / Full-stack Developer from Uzbekistan.",
+    description: "Backend Developer from Uzbekistan.",
     url: "https://toshmirzayev-inomjon.online",
     siteName: "Inomjon Toshmirzayev",
     locale: "en_US",

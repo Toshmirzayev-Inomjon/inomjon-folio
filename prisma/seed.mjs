@@ -6,11 +6,11 @@ const prisma = new PrismaClient();
 
 const personalProfile = {
   name: "Inomjon Toshmirzayev",
-  headline: "Full-stack Dasturchi",
+  headline: "Backend Developer",
   bio: "Zamonaviy web ilovalar, portfolio saytlar, dashboardlar va biznes uchun qulay web platformalar yarataman. Next.js, React, TypeScript, Prisma va Tailwind CSS yordamida tez, chiroyli va foydali loyihalar quraman.",
-  headlineUz: "Full-stack Dasturchi",
-  headlineEn: "Full-stack Developer",
-  headlineRu: "Full-stack разработчик",
+  headlineUz: "Backend Developer",
+  headlineEn: "Backend Developer",
+  headlineRu: "Backend Developer",
   bioUz: "Zamonaviy web ilovalar, portfolio saytlar, dashboardlar va biznes uchun qulay web platformalar yarataman. Next.js, React, TypeScript, Prisma va Tailwind CSS yordamida tez, chiroyli va foydali loyihalar quraman.",
   bioEn: "I build modern web apps, portfolio websites, dashboards and useful business platforms with Next.js, React, TypeScript, Prisma and Tailwind CSS.",
   bioRu: "Создаю современные web-приложения, portfolio сайты, dashboard'ы и удобные business platforms на Next.js, React, TypeScript, Prisma и Tailwind CSS.",
@@ -123,9 +123,10 @@ async function main() {
       ${personalProfile.linkedinUrl}, ${personalProfile.instagramUrl}, ${personalProfile.careerStartDate}, ${personalProfile.happyClientsCount}, datetime('now')
     )
     ON CONFLICT(id) DO UPDATE SET
-      headlineUz = COALESCE(Profile.headlineUz, excluded.headlineUz),
-      headlineEn = COALESCE(Profile.headlineEn, excluded.headlineEn),
-      headlineRu = COALESCE(Profile.headlineRu, excluded.headlineRu),
+      headline = excluded.headline,
+      headlineUz = excluded.headlineUz,
+      headlineEn = excluded.headlineEn,
+      headlineRu = excluded.headlineRu,
       bioUz = COALESCE(Profile.bioUz, excluded.bioUz),
       bioEn = COALESCE(Profile.bioEn, excluded.bioEn),
       bioRu = COALESCE(Profile.bioRu, excluded.bioRu),

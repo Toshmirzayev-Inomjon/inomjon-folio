@@ -221,7 +221,7 @@ Muhim:
 ## Author
 
 **Inomjon Toshmirzayev**  
-Full-stack dasturchi va AI mahsulot muhandisi.
+Backend Developer va AI mahsulot muhandisi.
 # inomjon.folio
 # inomjon-folio
 # inomjon-folio

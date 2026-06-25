@@ -32,7 +32,7 @@ export async function ensureProfile() {
     VALUES (
       'main',
       'Inomjon Toshmirzayev',
-      'Full-stack Dasturchi',
+      'Backend Developer',
       'Zamonaviy web ilovalar va biznes platformalar yarataman.',
       '/uploads/profile-inomjon.webp',
       20,
