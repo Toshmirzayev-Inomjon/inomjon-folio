@@ -10,6 +10,18 @@ import type {
 
 type ProjectRow = Omit<ProjectRecord, "tags">;
 type ProjectTagRow = TagRecord & { projectId: string };
+type VisitAnalyticsRow = {
+  totalVisits: bigint | number | null;
+  uniqueVisitors: bigint | number | null;
+  todayVisits: bigint | number | null;
+};
+type RecentVisitRow = {
+  id: string;
+  visitorKey: string;
+  path: string;
+  referrer: string | null;
+  createdAt: string;
+};
 
 export async function findProfile() {
   const rows = await prisma.$queryRaw<ProfileRecord[]>`
@@ -233,4 +245,59 @@ export async function deleteProject(id: string) {
     prisma.$executeRaw`DELETE FROM "_ProjectToTag" WHERE A = ${id}`,
     prisma.$executeRaw`DELETE FROM Project WHERE id = ${id}`,
   ]);
+}
+
+export async function recordSiteVisit(input: {
+  visitorKey: string;
+  path: string;
+  referrer: string | null;
+  userAgent: string | null;
+  ipHash: string | null;
+}) {
+  const id = randomUUID();
+  await prisma.$executeRaw`
+    INSERT INTO SiteVisit (id, visitorKey, path, referrer, userAgent, ipHash, createdAt)
+    VALUES (
+      ${id},
+      ${input.visitorKey},
+      ${input.path},
+      ${input.referrer},
+      ${input.userAgent},
+      ${input.ipHash},
+      datetime('now')
+    )
+  `;
+  return id;
+}
+
+export async function getVisitAnalytics() {
+  const [statsRows, recentVisits] = await Promise.all([
+    prisma.$queryRaw<VisitAnalyticsRow[]>`
+      SELECT
+        COUNT(*) AS totalVisits,
+        COUNT(DISTINCT visitorKey) AS uniqueVisitors,
+        SUM(CASE WHEN createdAt >= datetime('now', 'start of day') THEN 1 ELSE 0 END) AS todayVisits
+      FROM SiteVisit
+    `,
+    prisma.$queryRaw<RecentVisitRow[]>`
+      SELECT id, visitorKey, path, referrer, CAST(createdAt AS TEXT) AS createdAt
+      FROM SiteVisit
+      ORDER BY createdAt DESC
+      LIMIT 8
+    `,
+  ]);
+  const stats = statsRows[0];
+
+  return {
+    total_visits: Number(stats?.totalVisits ?? 0),
+    unique_visitors: Number(stats?.uniqueVisitors ?? 0),
+    today_visits: Number(stats?.todayVisits ?? 0),
+    recent_visits: recentVisits.map((visit) => ({
+      id: visit.id,
+      visitor_label: `visitor-${visit.visitorKey.slice(0, 8)}`,
+      path: visit.path,
+      referrer: visit.referrer,
+      created_at: visit.createdAt,
+    })),
+  };
 }

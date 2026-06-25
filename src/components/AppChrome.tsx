@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { Navbar } from "@/components/Navbar";
+import { VisitTracker } from "@/components/VisitTracker";
 
 export function AppChrome({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -10,7 +11,12 @@ export function AppChrome({ children }: { children: ReactNode }) {
 
   return (
     <>
-      {!isAdminRoute && <Navbar />}
+      {!isAdminRoute && (
+        <>
+          <Navbar />
+          <VisitTracker />
+        </>
+      )}
       {children}
     </>
   );

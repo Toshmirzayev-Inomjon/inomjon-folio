@@ -24,6 +24,18 @@ interface ProjectForm {
   github_link: string; live_link: string;
   featured: boolean; tag_ids: string[];
 }
+interface AnalyticsData {
+  total_visits: number;
+  unique_visitors: number;
+  today_visits: number;
+  recent_visits: {
+    id: string;
+    visitor_label: string;
+    path: string;
+    referrer: string | null;
+    created_at: string;
+  }[];
+}
 
 const emptyForm = (): ProjectForm => ({
   title: "", description: "", tech_stack: "",
@@ -585,6 +597,7 @@ function ProjectCard({ project, onEdit, onDelete }: {
 export function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => void }) {
   const [projects, setProjects]       = useState<Project[]>([]);
   const [tags, setTags]               = useState<TagItem[]>([]);
+  const [analytics, setAnalytics]     = useState<AnalyticsData | null>(null);
   const [tab, setTab]                 = useState<"projects" | "tags" | "profile">("projects");
   const [showForm, setShowForm]       = useState(false);
   const [editing, setEditing]         = useState<Project | null>(null);
@@ -613,7 +626,16 @@ export function AdminDashboard({ token, onLogout }: { token: string; onLogout: (
     } catch { /* silently ignore */ }
   }, [token]);
 
-  useEffect(() => { fetchProjects(); fetchTags(); }, [fetchProjects, fetchTags]);
+  const fetchAnalytics = useCallback(async () => {
+    try {
+      const res = await fetch(`${BACKEND}/api/v1/admin/analytics`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) setAnalytics(await res.json());
+    } catch { /* analytics must not block admin CRUD */ }
+  }, [token]);
+
+  useEffect(() => { fetchProjects(); fetchTags(); fetchAnalytics(); }, [fetchProjects, fetchTags, fetchAnalytics]);
 
   const handleDeleteProject = async (id: string) => {
     if (!confirm("Bu loyihani o'chirmoqchimisiz?")) return;
@@ -660,11 +682,14 @@ export function AdminDashboard({ token, onLogout }: { token: string; onLogout: (
 
       <main className="mx-auto max-w-4xl px-5 py-8">
         {/* Stats row */}
-        <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {[
             { label: "Jami loyihalar", value: projects.length, color: "text-white" },
             { label: "Featured",       value: projects.filter((p) => p.featured).length, color: "text-amber-400" },
             { label: "Teglar",         value: tags.length, color: "text-blue-400" },
+            { label: "Kirishlar",      value: analytics?.total_visits ?? 0, color: "text-emerald-400" },
+            { label: "Bugun",          value: analytics?.today_visits ?? 0, color: "text-cyan-400" },
+            { label: "Visitorlar",     value: analytics?.unique_visitors ?? 0, color: "text-violet-400" },
           ].map((s) => (
             <div key={s.label} className="rounded-2xl border border-zinc-800/80 bg-zinc-900/30 px-5 py-4">
               <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
@@ -672,6 +697,43 @@ export function AdminDashboard({ token, onLogout }: { token: string; onLogout: (
             </div>
           ))}
         </div>
+
+        {analytics && (
+          <div className="mb-8 rounded-2xl border border-zinc-800/80 bg-zinc-900/30 p-5">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold text-white">Oxirgi kirishlar</p>
+                <p className="mt-0.5 text-xs text-zinc-600">Portfolio ochilganda avtomatik yoziladi</p>
+              </div>
+              <button
+                onClick={fetchAnalytics}
+                className="rounded-xl border border-zinc-800 px-3 py-2 text-xs text-zinc-400 transition-all hover:border-zinc-600 hover:text-white"
+              >
+                Yangilash
+              </button>
+            </div>
+            {analytics.recent_visits.length === 0 ? (
+              <p className="text-sm text-zinc-600">Hali kirishlar yo'q.</p>
+            ) : (
+              <div className="space-y-2">
+                {analytics.recent_visits.map((visit) => (
+                  <div
+                    key={visit.id}
+                    className="flex flex-col gap-1 rounded-xl border border-zinc-800 bg-[#111111] px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-zinc-200">{visit.visitor_label}</p>
+                      <p className="truncate text-xs text-zinc-600">{visit.path}</p>
+                    </div>
+                    <p className="shrink-0 text-xs text-zinc-600">
+                      {new Date(visit.created_at).toLocaleString("uz-UZ")}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Tabs */}
         <div className="mb-6 flex gap-1 rounded-2xl border border-zinc-800/80 bg-zinc-900/30 p-1">
