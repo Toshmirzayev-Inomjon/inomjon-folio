@@ -14,6 +14,9 @@ const personalProfile = {
   bioUz: "Zamonaviy web ilovalar, portfolio saytlar, dashboardlar va biznes uchun qulay web platformalar yarataman. Next.js, React, TypeScript, Prisma va Tailwind CSS yordamida tez, chiroyli va foydali loyihalar quraman.",
   bioEn: "I build modern web apps, portfolio websites, dashboards and useful business platforms with Next.js, React, TypeScript, Prisma and Tailwind CSS.",
   bioRu: "Создаю современные web-приложения, portfolio сайты, dashboard'ы и удобные business platforms на Next.js, React, TypeScript, Prisma и Tailwind CSS.",
+  phoneNumber: "+998951840751",
+  contactEmail: "toshmirzayevinomjon@gmail.com",
+  location: "Qashqadaryo, Uzbekistan",
   heroImage: "/uploads/profile-inomjon.webp",
   cvUrl: "/api/cv",
   telegramUrl: "https://t.me/toshmirzayevinomjon",
@@ -108,12 +111,14 @@ async function main() {
 
   await prisma.$executeRaw`
     INSERT INTO Profile (
-      id, name, headline, bio, headlineUz, headlineEn, headlineRu, bioUz, bioEn, bioRu, heroImage, cvUrl,
+      id, name, headline, bio, headlineUz, headlineEn, headlineRu, bioUz, bioEn, bioRu,
+      phoneNumber, contactEmail, location, heroImage, cvUrl,
       telegramUrl, githubUrl, linkedinUrl, instagramUrl, careerStartDate, happyClientsCount, updatedAt
     )
     VALUES (
       'main', ${personalProfile.name}, ${personalProfile.headline}, ${personalProfile.bio}, ${personalProfile.headlineUz},
       ${personalProfile.headlineEn}, ${personalProfile.headlineRu}, ${personalProfile.bioUz}, ${personalProfile.bioEn}, ${personalProfile.bioRu},
+      ${personalProfile.phoneNumber}, ${personalProfile.contactEmail}, ${personalProfile.location},
       ${personalProfile.heroImage}, ${personalProfile.cvUrl}, ${personalProfile.telegramUrl}, ${personalProfile.githubUrl},
       ${personalProfile.linkedinUrl}, ${personalProfile.instagramUrl}, ${personalProfile.careerStartDate}, ${personalProfile.happyClientsCount}, datetime('now')
     )
@@ -124,6 +129,9 @@ async function main() {
       bioUz = COALESCE(Profile.bioUz, excluded.bioUz),
       bioEn = COALESCE(Profile.bioEn, excluded.bioEn),
       bioRu = COALESCE(Profile.bioRu, excluded.bioRu),
+      phoneNumber = COALESCE(Profile.phoneNumber, excluded.phoneNumber),
+      contactEmail = COALESCE(Profile.contactEmail, excluded.contactEmail),
+      location = COALESCE(Profile.location, excluded.location),
       careerStartDate = COALESCE(Profile.careerStartDate, excluded.careerStartDate),
       happyClientsCount = COALESCE(Profile.happyClientsCount, excluded.happyClientsCount),
       updatedAt = datetime('now')

@@ -3,9 +3,7 @@
 import { useState } from "react";
 import { Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
 
-// Uses relative URLs — Next.js rewrites proxy /api/v1/* to the backend
 const BACKEND = "";
-const ALLOWED_EMAIL = "toshmirzayevinomjon@gmail.com";
 
 type Props = { onLogin: (token: string) => void };
 
@@ -22,17 +20,12 @@ export function AdminLogin({ onLogin }: Props) {
       setError("Email va parolni to'ldiring.");
       return;
     }
-    if (email.trim().toLowerCase() !== ALLOWED_EMAIL) {
-      setError("Email yoki parol noto'g'ri.");
-      return;
-    }
-
     setLoading(true);
     try {
       const res = await fetch(`${BACKEND}/api/v1/auth/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ username: "admin", password }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
       });
       const data = await res.json();
       if (!res.ok || !data.access_token) {

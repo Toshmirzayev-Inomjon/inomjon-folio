@@ -19,17 +19,6 @@ const nextConfig = {
     return config;
   },
 
-  // Proxy /api/v1/* → FastAPI backend (works on all domains, no CORS issues)
-  async rewrites() {
-    const backendUrl = process.env.BACKEND_URL ?? "http://localhost:8000";
-    return [
-      {
-        source: "/api/v1/:path*",
-        destination: `${backendUrl}/api/v1/:path*`,
-      },
-    ];
-  },
-
   async headers() {
     return [
       {

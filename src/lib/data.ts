@@ -1,24 +1,20 @@
-/**
- * Data layer — all content fetched from the FastAPI backend.
- * Set BACKEND_URL in .env (server-side only, no NEXT_PUBLIC_ prefix).
- *
- * Example .env:
- *   BACKEND_URL=http://localhost:8000
- */
-
-const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:8000";
-const API = `${BACKEND_URL}/api/v1`;
-
-// ─── Response types ────────────────────────────────────────────────────────────
+import { prisma } from "@/lib/prisma";
+import { findProfile, listProjects, listSkills } from "@/lib/portfolio-db";
+import {
+  calculateExperienceYears,
+  serializeProfile,
+  serializeProject,
+  serializeSkill,
+} from "@/lib/portfolio-serializers";
 
 export type Tag = {
-  id: number;
+  id: string;
   name: string;
   slug: string;
 };
 
 export type ProfileView = {
-  id: number;
+  id: string;
   name: string;
   headline_uz: string | null;
   headline_en: string | null;
@@ -40,7 +36,7 @@ export type ProfileView = {
 };
 
 export type ProjectView = {
-  id: number;
+  id: string;
   title: string;
   description: string;
   tech_stack: string[];
@@ -52,7 +48,7 @@ export type ProjectView = {
 };
 
 export type SkillView = {
-  id: number;
+  id: string;
   name: string;
   group: string | null;
   sort_order: number;
@@ -64,46 +60,37 @@ export type PortfolioStatsView = {
   happy_clients_count: number;
 };
 
-// ─── Fetch helpers ─────────────────────────────────────────────────────────────
-
-async function apiFetch<T>(path: string): Promise<T | null> {
-  try {
-    const res = await fetch(`${API}${path}`, {
-      next: { revalidate: 0 }, // force-dynamic equivalent for fetch cache
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as T;
-  } catch (err) {
-    console.error(`[data] fetch ${path} failed:`, err);
-    return null;
-  }
-}
-
-// ─── Public API ────────────────────────────────────────────────────────────────
-
 export async function getProfileView(): Promise<ProfileView | null> {
-  return apiFetch<ProfileView>("/portfolio/profile");
+  const profile = await findProfile();
+  return profile ? serializeProfile(profile) : null;
 }
 
-export async function getProjectViews(limit?: number): Promise<ProjectView[]> {
-  const url = limit ? `/portfolio/projects?limit=${limit}` : "/portfolio/projects";
-  return (await apiFetch<ProjectView[]>(url)) ?? [];
+export async function getProjectViews(limit = 100): Promise<ProjectView[]> {
+  const projects = await listProjects(limit);
+  return projects.map(serializeProject);
 }
 
 export async function getSkillViews(): Promise<SkillView[]> {
-  return (await apiFetch<SkillView[]>("/portfolio/skills")) ?? [];
+  const skills = await listSkills();
+  return skills.map(serializeSkill);
 }
 
 export async function getPortfolioStats(): Promise<PortfolioStatsView> {
-  const fallback: PortfolioStatsView = {
-    project_count: 0,
-    experience_years: 0,
-    happy_clients_count: 0,
+  const [projectRows, profile] = await Promise.all([
+    prisma.$queryRaw<Array<{ count: bigint | number }>>`
+      SELECT COUNT(*) AS count FROM Project
+    `,
+    findProfile(),
+  ]);
+  const projectCount = Number(projectRows[0]?.count ?? 0);
+
+  return {
+    project_count: projectCount,
+    experience_years: calculateExperienceYears(profile?.careerStartDate ?? null),
+    happy_clients_count: profile?.happyClientsCount ?? 0,
   };
-  return (await apiFetch<PortfolioStatsView>("/portfolio/stats")) ?? fallback;
 }
 
-/** Convenience: fetch all portfolio data in parallel. */
 export async function getSiteData() {
   const [profile, projects, skills, stats] = await Promise.all([
     getProfileView(),

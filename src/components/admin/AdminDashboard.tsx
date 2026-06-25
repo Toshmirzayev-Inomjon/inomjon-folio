@@ -12,9 +12,9 @@ const BACKEND = "";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-interface TagItem  { id: number; name: string; slug: string }
+interface TagItem  { id: string; name: string; slug: string }
 interface Project  {
-  id: number; title: string; description: string;
+  id: string; title: string; description: string;
   tech_stack: string[]; github_link: string | null;
   live_link: string | null; featured: boolean;
   tags: TagItem[]; created_at: string;
@@ -22,7 +22,7 @@ interface Project  {
 interface ProjectForm {
   title: string; description: string; tech_stack: string;
   github_link: string; live_link: string;
-  featured: boolean; tag_ids: number[];
+  featured: boolean; tag_ids: string[];
 }
 
 const emptyForm = (): ProjectForm => ({
@@ -264,7 +264,7 @@ function TagManager({ token, tags, onTagsChange }: {
     finally { setBusy(false); }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (!confirm("Tegni o'chirish?")) return;
     await fetch(`${BACKEND}/api/v1/admin/tags/${id}`, {
       method: "DELETE", headers: { Authorization: `Bearer ${token}` },
@@ -345,7 +345,7 @@ function ProjectFormPanel({ token, tags, initial, onSaved, onCancel }: {
   const [busy, setBusy] = useState(false);
 
   const set = (k: keyof ProjectForm, v: unknown) => setForm((f) => ({ ...f, [k]: v }));
-  const toggleTag = (id: number) =>
+  const toggleTag = (id: string) =>
     set("tag_ids", form.tag_ids.includes(id)
       ? form.tag_ids.filter((x) => x !== id)
       : [...form.tag_ids, id]);
@@ -615,7 +615,7 @@ export function AdminDashboard({ token, onLogout }: { token: string; onLogout: (
 
   useEffect(() => { fetchProjects(); fetchTags(); }, [fetchProjects, fetchTags]);
 
-  const handleDeleteProject = async (id: number) => {
+  const handleDeleteProject = async (id: string) => {
     if (!confirm("Bu loyihani o'chirmoqchimisiz?")) return;
     await fetch(`${BACKEND}/api/v1/projects/${id}`, {
       method: "DELETE", headers: { Authorization: `Bearer ${token}` },

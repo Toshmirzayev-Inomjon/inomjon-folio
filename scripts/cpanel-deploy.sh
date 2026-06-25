@@ -10,6 +10,11 @@ DEPLOY_TMP="$APP_DIR/.next-deploy"
 
 cd "$APP_DIR"
 
+ENV_BACKUP="$HOME/.inomjon-folio.env.deploy-backup"
+if [ -f .env ]; then
+  cp .env "$ENV_BACKUP"
+fi
+
 if [ -f "$NODE_ENV_DIR" ]; then
   set +u
   # shellcheck disable=SC1090
@@ -20,6 +25,12 @@ fi
 set -u
 
 git pull origin main
+
+if [ -f "$ENV_BACKUP" ]; then
+  cp "$ENV_BACKUP" .env
+  chmod 600 .env
+  rm -f "$ENV_BACKUP"
+fi
 
 if [ ! -f next-build.zip ]; then
   echo "next-build.zip topilmadi. Uni $APP_DIR ichiga upload qiling." >&2
@@ -63,10 +74,6 @@ npm run prisma:seed
 
 BUILD_ID="$(cat .next/BUILD_ID)"
 
-# Older cPanel configurations for this app used app.js as the startup file.
-# Keep it synchronized so the selected startup filename cannot run stale code.
-cp server.js app.js
-
 # CloudLinux/Passenger watches this file and restarts the Node process.
 mkdir -p tmp
 touch tmp/restart.txt
@@ -78,7 +85,7 @@ if command -v cloudlinux-selector >/dev/null 2>&1; then
     --interpreter nodejs \
     --user "$USER" \
     --app-root "$APP_ROOT" \
-    --startup-file app.js || true
+    --startup-file server.js || true
 
   if cloudlinux-selector restart \
     --json \
@@ -100,7 +107,7 @@ PAGE_JS="$(find .next/static/chunks/app -type f -name 'page-*.js' | head -1)"
 
 echo "CSS: $CSS"
 echo "Page JS: $PAGE_JS"
-echo "Startup fayli yangilandi: app.js"
+echo "Startup fayli: server.js"
 if [ "$RESTARTED" = true ]; then
   echo "Node ilova CloudLinux orqali restart qilindi."
 else
