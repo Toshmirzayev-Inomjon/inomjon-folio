@@ -10,7 +10,7 @@ import "@fontsource/playfair-display/800.css";
 import "@fontsource/playfair-display/900.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { LanguageProvider } from "@/providers/language-provider";
-import { Navbar } from "@/components/Navbar";
+import { AppChrome } from "@/components/AppChrome";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -46,8 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       >
         <ThemeProvider>
           <LanguageProvider>
-            <Navbar />
-            {children}
+            <AppChrome>{children}</AppChrome>
           </LanguageProvider>
         </ThemeProvider>
       </body>
