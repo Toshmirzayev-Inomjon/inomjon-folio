@@ -29,14 +29,6 @@ export function Navbar() {
   return (
     <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
       <nav className="flex items-center gap-1 rounded-full border border-black/10 bg-white/90 px-4 py-2 shadow-lg backdrop-blur-md dark:border-white/10 dark:bg-[#111111]/90 dark:shadow-xl">
-        {/* Logo */}
-        <Link
-          href="/"
-          className="mr-4 whitespace-nowrap font-serif text-base font-semibold tracking-tight text-zinc-900 dark:text-white/90"
-        >
-          Inomjon
-        </Link>
-
         {/* Nav links */}
         <div className="hidden items-center gap-0.5 md:flex">
           {navLinks.map(({ href, label }) => {
