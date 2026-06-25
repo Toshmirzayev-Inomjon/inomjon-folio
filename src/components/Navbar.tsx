@@ -34,7 +34,7 @@ export function Navbar() {
           href="/"
           className="mr-4 whitespace-nowrap font-serif text-base font-semibold tracking-tight text-zinc-900 dark:text-white/90"
         >
-          Toshmirzayev
+          Inomjon
         </Link>
 
         {/* Nav links */}
